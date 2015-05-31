@@ -28,4 +28,5 @@ pureSlider is still missing a few features that I want to integrate as soon as I
 - random start,
 - try to make it animate backwards,
 - support for more states of animation,
-- make a proper landing page with example CSS transition classes.
+- make a proper landing page with example CSS transition classes,
+- tidy up the code.
