@@ -17,22 +17,22 @@
 				activeClass: 'active',
 
 				/**
-				 * Czy pokazywać nawigację "Lewo", "Prawo"?
+				 * Show "Left", "Right" navigation?
 				 */
 				showNavigation: false,
 
 				/**
-				 * Czy pokazywać przyciski zmiany slajdów?
+				 * Show slide switches? TODO - needs implementing, currently does nothing
 				 */
 				showSlideButtons: true,
 
 				/**
-				 *  Czy automatycznie przesuwać slider?
+				 *  Autostart sliding? TODO - needs implementing, currently does nothing
 				 */
 				autorun: true,
 
 				/**
-				 *  Czy startować losowo?
+				 *  Random start? TODO - needs implementing, currently does nothing
 				 */
 				randomStart: false
 			}
@@ -40,20 +40,23 @@
 			this.options = $.extend(this.defaultOptions, this.options);
 			this.elements = this.container.find( this.options.slideNode ).toArray();
 
+			//console.log ( this.container );
+			//console.log ( this.elements );
+			
 			this.start = function() {
 				var convertedElements = [];
 
 				for( var i in this.elements )
 				{
 					convertedElements.push( $( this.elements[i] ) );
-					convertedElements[i].css('z-index', this.elements.length - i);
+					convertedElements[i].css('z-index', 1);
 				}
 				this.elements = convertedElements;
 
-				this.elements[0].addClass( this.options.activeClass );
+				this.elements[0].css('z-index', this.elements.length ).addClass( this.options.activeClass );
 				this.runLoop();
 
-				/* Przykład na pętlę bez iteratora po wszystkich elementach
+				/* easy iterate over all elements
 				var current = this.elements.shift();
 				this.elements.each( function(i) {
 					$(this);
@@ -67,6 +70,17 @@
 					self.prev();
 				}, this.options.slideDuration )
 			}
+
+
+			this.animate = function(current, next) {
+				next.css('z-index', this.elements.length )
+				current.css('z-index', 1);
+				next.addClass('active');
+
+				setTimeout(function() {
+					current.removeClass('active');
+				}, this.options.animDuration);
+			};
 
 
 			this.next = function() {
@@ -110,19 +124,7 @@
 			}
 
 
-			this.animate = function(current, next) {
-				
-				next.css('z-index', this.elements.length )
-				current.css('z-index', 1);
-				next.addClass('active');
-
-				setTimeout(function() {
-					current.removeClass('active');
-				}, this.options.animDuration);
-			};
-
-
-			/* Zdarzenia tu się zdarzają. */
+			/* Events do happen in here. */
 			var self = this;
 			//console.log($(this.container).find( this.options.nextButton ));
 
@@ -139,10 +141,18 @@
 			});
 		};
 
-		/* Zwracamy slajder dla każdego z itemów zselekconych selektorem. */
+		/* Return a slider for each of the items got by the selector. */
+		
+		/* jBone forEach hack that is not working
+		if (typeof this.forEach == 'function') {
+			this.each = this.forEach;
+		}*/
+
+		
 		return this.each(function() {
+			//console.log( this );
 			var main = new pureSlider( $(this), options );
 			main.start();
 		});
 	}
-})(this.jQuery || this.Zepto || this.jBone);
+})(this.jQuery || this.Zepto/* || this.jBone*/);
