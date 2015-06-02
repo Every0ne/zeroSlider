@@ -67,7 +67,7 @@
 			this.runLoop = function() {
 				self = this;
 				this.loop = setInterval( function() {
-					self.prev();
+					self.next();
 				}, this.options.slideDuration )
 			}
 
