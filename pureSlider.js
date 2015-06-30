@@ -1,3 +1,4 @@
+// parseFloat($('.someclass').css('transition-duration')) * 1000    -this will be useful in the future.
 ;(function($){
 	$.fn.pureSlider = function(options) {
 
