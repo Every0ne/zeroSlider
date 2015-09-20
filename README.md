@@ -1,11 +1,11 @@
 # pureSlider
-A slider as simple and lightweight as it can be. Provide two css classes with transition, a container with whatever you want to slide and it will slide it in a timely fashion.
+A slider as simple and lightweight as it can be. Provide some css classes with transition, a container with whatever you want to slide and it will slide it in a timely fashion.
 
 ### Advantages?
-- truly lightweight, just a few lines of code,
-- compatible with both jQuery and Zepto,
+- lightweight,
+- jQuery & Zepto compatible,
 - does what is absolutely necessary and nothing more,
-- no ugly inline styling, apart from z-index,
+- no ugly inline styling,
 - doltishly easy to integrate with any kind of html generator,
 - not restricting you to preprogrammed effects or markup pattern, *you* design the effects used on *your* markup.
 
@@ -24,9 +24,7 @@ That's why I made my own, based on what's already available - CSS transitions.
 ### TODO?
 pureSlider is still missing a few features that I want to integrate as soon as I have some time to spare:
 - disable autosliding,
-- slide switches,
 - random start,
-- try to make it animate backwards,
-- support for more states of animation,
+- support for more slide states for transitions,
 - make a proper landing page with example CSS transition classes,
 - tidy up the code.

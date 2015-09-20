@@ -1,21 +1,32 @@
-// parseFloat($('.someclass').css('transition-duration')) * 1000    -this will be useful in the future.
 ;(function($){
 	$.fn.pureSlider = function(options) {
 
 		var pureSlider = function(container, options) {
 
+			// container with slides
 			this.container = container;
+			
+			// setTimeout/setInterval handle
 			this.loop = false;
 			this.options = options;
+			
+			// current slide
 			this.currentIndex = 0;
+			
+			// duration of slide interval + slide transition
+			this.trueSlideDuration = 0;
+
+			// First slide needs just the slide duration without transition.
+			this.firstRun = true;
 			this.defaultOptions = {
 
-				animDuration:  500,
-				slideDuration:  2500,
+				//animDuration:  1,
+				slideDuration:  2000,
 				slideNode: 'div.slide',
 				nextButton: '.ns-next',
 				prevButton: '.ns-prev',
 				activeClass: 'active',
+				activatedClass: 'activated',
 
 				/**
 				 * Show "Left", "Right" navigation?
@@ -47,14 +58,16 @@
 			this.start = function() {
 				var convertedElements = [];
 
-				for( var i in this.elements )
+				for(var i = 0; i < this.elements.length; i++)
 				{
 					convertedElements.push( $( this.elements[i] ) );
-					convertedElements[i].css('z-index', 1);
+					// convertedElements[i].css('z-index', 1);
 				}
 				this.elements = convertedElements;
 
-				this.elements[0].css('z-index', this.elements.length ).addClass( this.options.activeClass );
+				//this.elements[0].css('z-index', this.elements.length ).addClass( this.options.activeClass );
+				this.elements[0].addClass( this.options.activeClass );
+				this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
 				this.runLoop();
 
 				/* easy iterate over all elements
@@ -63,28 +76,82 @@
 					$(this);
 				})*/
 			}
+			
+			this.getTransitionDuration = function(element){
+				var duration, longest = 0;
 
+				// Get transition property from css of element.
+				durStrings = element.css('transition-duration');
 
+				// Remove spaces, text-transform to lowercase and split several values to array.
+				durStrings = durStrings.replace(/\s/g, '').toLowerCase().split(',');
+
+				// If there was a single value, transform to array anyway for easier processing.
+				if(durStrings.constructor !== Array)
+					durStrings = [durStrings];
+
+				for(var i = 0; i < durStrings.length; i++)
+				{
+					// Check if defined as miliseconds.
+					// Get numerical part from string. Parse numerical string to number.
+					// If number was not defined as miliseconds, then convert it to miliseconds.
+					duration = (durStrings[i].indexOf("ms")>-1) ? parseFloat(durStrings[i]) : parseFloat(durStrings[i])*1000;
+
+					// As transition may have many durations, we care only for the longest one.
+					longest = duration > longest ? duration : longest;
+				}
+
+				return longest;
+			};
+
+			/*
 			this.runLoop = function() {
 				self = this;
 				this.loop = setInterval( function() {
 					self.next();
 				}, this.options.slideDuration )
 			}
+			*/
+			
+			this.runLoop = function() {
+				self = this;
+				
+				if(this.firstRun){
+					this.loop = setTimeout( function() {
+						self.next();
+						self.runLoop();
+					}, this.options.slideDuration );
+					this.firstRun = false;
+				}
+				else {
+					this.loop = setInterval( function() {
+					self.next();
+					}, this.trueSlideDuration );
+				}
+			}
 
 
-			this.animate = function(current, next) {
-				next.css('z-index', this.elements.length )
-				current.css('z-index', 1);
-				next.addClass('active');
+			this.animate = function(current, next, activated) {
+				//next.css('z-index', this.elements.length )
+				//current.css('z-index', 1);
+				activated = activated === true ? true : false;
 
+				if(activated)
+					next.addClass( this.options.activatedClass );
+				else
+					next.addClass( this.options.activeClass );
+
+				current.removeClass( this.options.activeClass+' '+this.options.activatedClass );
+
+				/*
 				setTimeout(function() {
 					current.removeClass('active');
 				}, this.options.animDuration);
+				*/
 			};
 
 
-			this.next = function() {
+			this.next = function(activated) {
 				var next 	= null;
 				var current = null;
 
@@ -101,10 +168,10 @@
 					this.currentIndex = 0;
 				}
 
-				this.animate(current, next);
+				this.animate(current, next, activated);
 			}
 
-			this.prev = function() {
+			this.prev = function(activated) {
 				var next 	= null;
 				var current = null;
 
@@ -121,7 +188,14 @@
 					this.currentIndex = this.elements.length - 1;
 				}
 
-				this.animate(current, next);
+				this.animate(current, next, activated);
+			}
+
+
+			this.stopLoop = function(){
+				clearInterval(this.loop);
+				clearTimeout(this.loop);
+				this.firstRun = true;
 			}
 
 
@@ -130,24 +204,17 @@
 			//console.log($(this.container).find( this.options.nextButton ));
 
 			$(this.container).find( this.options.nextButton ).on('click', function(){
-				clearInterval(self.loop);
-				self.next();
+				self.stopLoop();
+				self.next(true);
 				self.runLoop();
 			});
 
 			$(this.container).find( this.options.prevButton ).on('click', function(){
-				clearInterval(self.loop)
-				self.prev()
-				self.runLoop()
+				self.stopLoop();
+				self.prev(true);
+				self.runLoop();
 			});
 		};
-
-		/* Return a slider for each of the items got by the selector. */
-		
-		/* jBone forEach hack that is not working
-		if (typeof this.forEach == 'function') {
-			this.each = this.forEach;
-		}*/
 
 		
 		return this.each(function() {
@@ -156,4 +223,4 @@
 			main.start();
 		});
 	}
-})(this.jQuery || this.Zepto/* || this.jBone*/);
+})(this.jQuery || this.Zepto);
