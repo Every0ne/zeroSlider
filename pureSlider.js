@@ -217,10 +217,9 @@
 		};
 
 		
-		return this.each(function() {
-			//console.log( this );
-			var main = new pureSlider( $(this), options );
+		return this.toArray().forEach(function(elt) {
+			var main = new pureSlider( $(elt), options );
 			main.start();
 		});
 	}
-})(this.jQuery || this.Zepto);
+})(this.jQuery || this.Zepto || this.jBone);
