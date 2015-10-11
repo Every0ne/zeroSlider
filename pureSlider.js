@@ -23,10 +23,11 @@
 				//animDuration:  1,
 				slideDuration:  2000,
 				slideNode: 'div.slide',
-				nextButton: '.ns-next',
-				prevButton: '.ns-prev',
+				nextButton: '.next',
+				prevButton: '.prev',
 				activeClass: 'active',
-				activatedClass: 'activated',
+				altActiveClass: 'activated',
+				inactiveClass: 'deactivated',
 
 				/**
 				 * Show "Left", "Right" navigation?
@@ -64,7 +65,7 @@
 					// convertedElements[i].css('z-index', 1);
 				}
 				this.elements = convertedElements;
-
+				
 				//this.elements[0].css('z-index', this.elements.length ).addClass( this.options.activeClass );
 				this.elements[0].addClass( this.options.activeClass );
 				this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
@@ -137,11 +138,22 @@
 				activated = activated === true ? true : false;
 
 				if(activated)
-					next.addClass( this.options.activatedClass );
+				{
+					for( var i = 0; i < this.elements.length; i++ )
+					{
+						this.elements[i].addClass( this.options.inactiveClass );
+					}
+					next.addClass( this.options.altActiveClass ).removeClass( this.options.inactiveClass );
+				}
 				else
+				{
+					for( var i = 0; i < this.elements.length; i++ )
+					{
+						this.elements[i].removeClass( this.options.inactiveClass );
+					}
 					next.addClass( this.options.activeClass );
-
-				current.removeClass( this.options.activeClass+' '+this.options.activatedClass );
+				}
+				current.removeClass( this.options.activeClass+' '+this.options.altActiveClass );
 
 				/*
 				setTimeout(function() {
@@ -201,7 +213,6 @@
 
 			/* Events do happen in here. */
 			var self = this;
-			//console.log($(this.container).find( this.options.nextButton ));
 
 			$(this.container).find( this.options.nextButton ).on('click', function(){
 				self.stopLoop();
