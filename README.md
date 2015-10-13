@@ -3,7 +3,7 @@ A slider as simple and lightweight as it can be. Provide some css classes with t
 
 ### Advantages?
 - lightweight,
-- jQuery & Zepto compatible,
+- jQuery, Zepto and jBone compatible,
 - does what is absolutely necessary and nothing more,
 - no ugly inline styling,
 - doltishly easy to integrate with any kind of html generator,
