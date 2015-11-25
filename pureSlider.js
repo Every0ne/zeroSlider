@@ -57,17 +57,8 @@
 			//console.log ( this.elements );
 			
 			this.start = function() {
-				var convertedElements = [];
-
-				for(var i = 0; i < this.elements.length; i++)
-				{
-					convertedElements.push( $( this.elements[i] ) );
-					// convertedElements[i].css('z-index', 1);
-				}
-				this.elements = convertedElements;
-				
-				//this.elements[0].css('z-index', this.elements.length ).addClass( this.options.activeClass );
-				this.elements[0].addClass( this.options.activeClass );
+	
+				this.elements[0].classList.add( this.options.activeClass );
 				this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
 				this.runLoop();
 
@@ -82,7 +73,7 @@
 				var duration, longest = 0;
 
 				// Get transition property from css of element.
-				durStrings = element.css('transition-duration');
+				durStrings = getComputedStyle(element)['transition-duration'];
 
 				// Remove spaces, text-transform to lowercase and split several values to array.
 				durStrings = durStrings.replace(/\s/g, '').toLowerCase().split(',');
@@ -141,19 +132,21 @@
 				{
 					for( var i = 0; i < this.elements.length; i++ )
 					{
-						this.elements[i].addClass( this.options.inactiveClass );
+						this.elements[i].classList.add( this.options.inactiveClass );
 					}
-					next.addClass( this.options.altActiveClass ).removeClass( this.options.inactiveClass );
+					next.classList.add( this.options.altActiveClass );
+					next.classList.remove( this.options.inactiveClass );
 				}
 				else
 				{
 					for( var i = 0; i < this.elements.length; i++ )
 					{
-						this.elements[i].removeClass( this.options.inactiveClass );
+						this.elements[i].classList.remove( this.options.inactiveClass );
 					}
-					next.addClass( this.options.activeClass );
+					next.classList.add( this.options.activeClass );
 				}
-				current.removeClass( this.options.activeClass+' '+this.options.altActiveClass );
+				current.classList.remove( this.options.activeClass );
+				current.classList.remove( this.options.altActiveClass );
 
 				/*
 				setTimeout(function() {
