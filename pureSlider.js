@@ -207,13 +207,15 @@
 			/* Events do happen in here. */
 			var self = this;
 
-			$(this.container).find( this.options.nextButton ).on('click', function(){
+			$(this.container).find( this.options.nextButton ).on('click', function(e){
+				e.preventDefault();
 				self.stopLoop();
 				self.next(true);
 				self.runLoop();
 			});
 
-			$(this.container).find( this.options.prevButton ).on('click', function(){
+			$(this.container).find( this.options.prevButton ).on('click', function(e){
+				e.preventDefault();
 				self.stopLoop();
 				self.prev(true);
 				self.runLoop();
