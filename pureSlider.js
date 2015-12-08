@@ -5,14 +5,14 @@
 
 			// container with slides
 			this.container = container;
-			
+
 			// setTimeout/setInterval handle
 			this.loop = false;
 			this.options = options;
-			
+
 			// current slide
 			this.currentIndex = 0;
-			
+
 			// duration of slide interval + slide transition
 			this.trueSlideDuration = 0;
 
@@ -55,9 +55,9 @@
 
 			//console.log ( this.container );
 			//console.log ( this.elements );
-			
+
 			this.start = function() {
-	
+
 				this.elements[0].classList.add( this.options.activeClass );
 				this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
 				this.runLoop();
@@ -68,29 +68,32 @@
 					$(this);
 				})*/
 			}
-			
+
 			this.getTransitionDuration = function(element){
 				var duration, longest = 0;
 
 				// Get transition property from css of element.
 				durStrings = getComputedStyle(element)['transition-duration'];
 
-				// Remove spaces, text-transform to lowercase and split several values to array.
-				durStrings = durStrings.replace(/\s/g, '').toLowerCase().split(',');
-
-				// If there was a single value, transform to array anyway for easier processing.
-				if(durStrings.constructor !== Array)
-					durStrings = [durStrings];
-
-				for(var i = 0; i < durStrings.length; i++)
+				if(durStrings !== undefined)
 				{
-					// Check if defined as miliseconds.
-					// Get numerical part from string. Parse numerical string to number.
-					// If number was not defined as miliseconds, then convert it to miliseconds.
-					duration = (durStrings[i].indexOf("ms")>-1) ? parseFloat(durStrings[i]) : parseFloat(durStrings[i])*1000;
+					// Remove spaces, text-transform to lowercase and split several values to array.
+					durStrings = durStrings.replace(/\s/g, '').toLowerCase().split(',');
 
-					// As transition may have many durations, we care only for the longest one.
-					longest = duration > longest ? duration : longest;
+					// If there was a single value, transform to array anyway for easier processing.
+					if(durStrings.constructor !== Array)
+						durStrings = [durStrings];
+
+					for(var i = 0; i < durStrings.length; i++)
+					{
+						// Check if defined as miliseconds.
+						// Get numerical part from string. Parse numerical string to number.
+						// If number was not defined as miliseconds, then convert it to miliseconds.
+						duration = (durStrings[i].indexOf("ms")>-1) ? parseFloat(durStrings[i]) : parseFloat(durStrings[i])*1000;
+
+						// As transition may have many durations, we care only for the longest one.
+						longest = duration > longest ? duration : longest;
+					}
 				}
 
 				return longest;
@@ -104,10 +107,10 @@
 				}, this.options.slideDuration )
 			}
 			*/
-			
+
 			this.runLoop = function() {
 				self = this;
-				
+
 				if(this.firstRun){
 					this.loop = setTimeout( function() {
 						self.next();
@@ -222,7 +225,7 @@
 			});
 		};
 
-		
+
 		return this.toArray().forEach(function(elt) {
 			var main = new pureSlider( $(elt), options );
 			main.start();
