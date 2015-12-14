@@ -58,6 +58,10 @@
 
 			this.start = function() {
 
+				// Don't crash when there are no slides on stage.
+				if( this.elements.length < 1 )
+					return;
+
 				this.elements[0].classList.add( this.options.activeClass );
 				this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
 				this.runLoop();
