@@ -31,30 +31,31 @@
 
 				/**
 				 * Show "Left", "Right" navigation?
+				 * Well, actually this somewhat collides with nextButton/prevButton,
+				 * which just slaps events on top of already placed buttons. So do we actually need this?
+				 * Maybe it shoud be changed to "generatePrevNext" or smth?
+				 *
+				 showNavigation: false,
 				 */
-				showNavigation: false,
 
 				/**
 				 * Show slide switches? TODO - needs implementing, currently does nothing
 				 */
-				showSlideButtons: true,
+				//showSlideButtons: true,
 
 				/**
 				 *  Autostart sliding? TODO - needs implementing, currently does nothing
 				 */
-				autorun: true,
+				//autorun: true,
 
 				/**
 				 *  Random start? TODO - needs implementing, currently does nothing
 				 */
-				randomStart: false
+				//randomStart: false
 			}
 
 			this.options = $.extend(this.defaultOptions, this.options);
-			this.elements = this.container.find( this.options.slideNode ).toArray();
-
-			//console.log ( this.container );
-			//console.log ( this.elements );
+			this.elements = container.querySelectorAll( this.options.slideNode );
 
 			this.start = function() {
 
@@ -214,14 +215,14 @@
 			/* Events do happen in here. */
 			var self = this;
 
-			$(this.container).find( this.options.nextButton ).on('click', function(e){
+			this.container.querySelector( this.options.nextButton ).addEventListener('click', function(e){
 				e.preventDefault();
 				self.stopLoop();
 				self.next(true);
 				self.runLoop();
 			});
 
-			$(this.container).find( this.options.prevButton ).on('click', function(e){
+			this.container.querySelector( this.options.prevButton ).addEventListener('click', function(e){
 				e.preventDefault();
 				self.stopLoop();
 				self.prev(true);
@@ -231,7 +232,7 @@
 
 
 		return this.toArray().forEach(function(elt) {
-			var main = new pureSlider( $(elt), options );
+			var main = new pureSlider( elt, options );
 			main.start();
 		});
 	}
