@@ -8,7 +8,6 @@
 
 			// setTimeout/setInterval handle
 			this.loop = false;
-			this.options = options;
 
 			// current slide
 			this.currentIndex = 0;
@@ -18,7 +17,7 @@
 
 			// First slide needs just the slide duration without transition.
 			this.firstRun = true;
-			this.defaultOptions = {
+			this.defaults = {
 
 				//animDuration:  1,
 				slideDuration:  2000,
@@ -29,14 +28,6 @@
 				altActiveClass: 'activated',
 				inactiveClass: 'deactivated',
 
-				/**
-				 * Show "Left", "Right" navigation?
-				 * Well, actually this somewhat collides with nextButton/prevButton,
-				 * which just slaps events on top of already placed buttons. So do we actually need this?
-				 * Maybe it shoud be changed to "generatePrevNext" or smth?
-				 *
-				 showNavigation: false,
-				 */
 
 				/**
 				 * Show slide switches? TODO - needs implementing, currently does nothing
@@ -44,41 +35,73 @@
 				//showSlideButtons: true,
 
 				/**
-				 *  Autostart sliding? TODO - needs implementing, currently does nothing
+				 *  Autoinit sliding? TODO - needs implementing, currently does nothing
 				 */
 				//autorun: true,
 
 				/**
-				 *  Random start? TODO - needs implementing, currently does nothing
+				 *  Random init? TODO - needs implementing, currently does nothing
 				 */
-				//randomStart: false
+				//randominit: false
+			};
+
+			this.options = options;
+
+			for( var property in this.defaults ) {
+				if (this.defaults.hasOwnProperty(property) && !this.options.hasOwnProperty(property))
+					this.options[property] = this.defaults[property];
 			}
 
-			this.options = $.extend(this.defaultOptions, this.options);
 			this.elements = container.querySelectorAll( this.options.slideNode );
 
-			this.start = function() {
+			this.init = function() {
 
-				// Don't crash when there are no slides on stage.
+				// If there are no elements  on stage, remove all navigation
+				// and don't run the loop.
 				if( this.elements.length < 1 )
+				{
+					this.removeNavigation();
 					return;
+				}
 
 				this.elements[0].classList.add( this.options.activeClass );
-				this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
-				this.runLoop();
 
-				/* easy iterate over all elements
-				var current = this.elements.shift();
-				this.elements.each( function(i) {
-					$(this);
-				})*/
+				// If there's only one slide, remove all navigation
+				// and don't run the loop.
+				if( this.elements.length == 1 )
+				{
+					this.removeNavigation();
+					return;
+				}
+				// If there's more than one slide, leave the navigation elements intact,
+				// register events on it, and run the loop.
+				else {
+					this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
+					this.runLoop();
+
+					var self = this;
+					this.container.querySelector( this.options.nextButton ).addEventListener('click', function(e){
+						e.preventDefault();
+						self.stopLoop();
+						self.next(true);
+						self.runLoop();
+					});
+
+					this.container.querySelector( this.options.prevButton ).addEventListener('click', function(e){
+						e.preventDefault();
+						self.stopLoop();
+						self.prev(true);
+						self.runLoop();
+					});
+				}
 			}
 
-			this.getTransitionDuration = function(element){
+
+			this.getTransitionDuration = function(elt){
 				var duration, longest = 0;
 
 				// Get transition property from css of element.
-				durStrings = getComputedStyle(element)['transition-duration'];
+				durStrings = getComputedStyle(elt)['transition-duration'];
 
 				if(durStrings !== undefined)
 				{
@@ -104,14 +127,6 @@
 				return longest;
 			};
 
-			/*
-			this.runLoop = function() {
-				self = this;
-				this.loop = setInterval( function() {
-					self.next();
-				}, this.options.slideDuration )
-			}
-			*/
 
 			this.runLoop = function() {
 				self = this;
@@ -132,8 +147,7 @@
 
 
 			this.animate = function(current, next, activated) {
-				//next.css('z-index', this.elements.length )
-				//current.css('z-index', 1);
+
 				activated = activated === true ? true : false;
 
 				if(activated)
@@ -155,12 +169,6 @@
 				}
 				current.classList.remove( this.options.activeClass );
 				current.classList.remove( this.options.altActiveClass );
-
-				/*
-				setTimeout(function() {
-					current.removeClass('active');
-				}, this.options.animDuration);
-				*/
 			};
 
 
@@ -212,28 +220,17 @@
 			}
 
 
-			/* Events do happen in here. */
-			var self = this;
-
-			this.container.querySelector( this.options.nextButton ).addEventListener('click', function(e){
-				e.preventDefault();
-				self.stopLoop();
-				self.next(true);
-				self.runLoop();
-			});
-
-			this.container.querySelector( this.options.prevButton ).addEventListener('click', function(e){
-				e.preventDefault();
-				self.stopLoop();
-				self.prev(true);
-				self.runLoop();
-			});
+			this.removeNavigation = function(){
+				Array.prototype.forEach.call( this.container.querySelectorAll( this.options.prevButton + ', ' + this.options.nextButton ), function(elt){
+					elt.parentNode.removeChild(elt);
+				});
+			}
 		};
 
 
 		return this.toArray().forEach(function(elt) {
 			var main = new pureSlider( elt, options );
-			main.start();
+			main.init();
 		});
 	}
 })(this.jQuery || this.Zepto || this.jBone);
