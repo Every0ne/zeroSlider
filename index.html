@@ -7,26 +7,31 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css.css">
+		<link href='https://fonts.googleapis.com/css?family=Alegreya+Sans:400,700,700italic,400italic,300,300italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="assets/css/normalize.css">
+		<link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="pureSlider.css">
 
-        <script src="libs/jbone.js"></script>
-		<script src="pureSlider.js"></script>
+        <script type="text/javascript" src="assets/js/jbone.js"></script>
+		<script type="text/javascript" src="pureSlider.js"></script>
     </head>
     <body>
 
-        <container>
-			<slide style="background-image: url('img/barrow.jpg')"><span>Slide one - a barrow</span></slide>
-			<slide style="background-image: url('img/blossom.jpg')"><span>Second slide. Blossom</span></slide>
-			<slide style="background-image: url('img/crocuses.jpg')"><span>Crocuses look calming on third slide.</span></slide>
-			<slide style="background-image: url('img/fog.jpg')"><span>Fog. 4th slide</span></slide>
-			<slide style="background-image: url('img/poppies.jpg')"><span>Poppies on fifth slide</span></slide>
+		<h1>pureSlider</h1>
+
+        <div class="stage">
+			<div class="slide" style="background-image: url('assets/img/barrow.jpg')"><span>Slide one - a barrow</span></div>
+			<div class="slide" style="background-image: url('assets/img/blossom.jpg')"><span>Second slide. Blossom</span></div>
+			<div class="slide" style="background-image: url('assets/img/crocuses.jpg')"><span>Crocuses look calming on third slide.</span></div>
+			<div class="slide" style="background-image: url('assets/img/fog.jpg')"><span>Fog. 4th slide</span></div>
+			<div class="slide" style="background-image: url('assets/img/poppies.jpg')"><span>Poppies on fifth slide</span></div>
 			<div class="next">&rtrif;</div>
 			<div class="prev">&ltrif;</div>
 		</container>
 
 		<script>
-			$('container').pureSlider({
-				slideNode: 'slide'
+			$('.stage').pureSlider({
+				slideNode: '.slide'
 			});
 		</script>
     </body>

@@ -80,19 +80,28 @@
 					this.runLoop();
 
 					var self = this;
-					this.container.querySelector( this.options.nextButton ).addEventListener('click', function(e){
-						e.preventDefault();
-						self.stopLoop();
-						self.next(true);
-						self.runLoop();
-					});
+					var nextButton = this.container.querySelector( this.options.nextButton );
+					var prevButton = this.container.querySelector( this.options.prevButton );
 
-					this.container.querySelector( this.options.prevButton ).addEventListener('click', function(e){
-						e.preventDefault();
-						self.stopLoop();
-						self.prev(true);
-						self.runLoop();
-					});
+					if( nextButton !== null )
+					{
+						nextButton.addEventListener('click', function(e){
+							e.preventDefault();
+							self.stopLoop();
+							self.next(true);
+							self.runLoop();
+						});
+					}
+
+					if( prevButton !== null )
+					{
+						prevButton.addEventListener('click', function(e){
+							e.preventDefault();
+							self.stopLoop();
+							self.prev(true);
+							self.runLoop();
+						});
+					}
 				}
 			}
 
@@ -156,8 +165,8 @@
 					{
 						this.elements[i].classList.add( this.options.inactiveClass );
 					}
-					next.classList.add( this.options.altActiveClass );
 					next.classList.remove( this.options.inactiveClass );
+					next.classList.add( this.options.altActiveClass );
 				}
 				else
 				{
@@ -167,8 +176,8 @@
 					}
 					next.classList.add( this.options.activeClass );
 				}
-				current.classList.remove( this.options.activeClass );
 				current.classList.remove( this.options.altActiveClass );
+				current.classList.remove( this.options.activeClass );
 			};
 
 
