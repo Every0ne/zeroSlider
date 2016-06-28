@@ -1,22 +1,16 @@
-html, body {
-	background: #000;
-	min-height: 100%;
-	margin: 0;
-	padding: 0;
-}
-
-container {
-    display:block;
-    position:relative;
-	top: 33%;
-    width: 100%;
+.stage {
+    display: block;
+    position: relative;
+    width: 90%;
+	margin: 0 auto;
 	padding-bottom: 33%;
 	border: none;
 	overflow: hidden;
+	box-shadow: 0 0 10px rgba(47, 21, 0, 1);
 }
 
 /* Normal slide in inactive state */
-slide {
+.slide {
     transition-property: opacity, transform, z-index;
 	transition-duration: 0ms;
 	transition-function: linear;
@@ -37,7 +31,7 @@ slide {
 }
 
 /* Active slide */
-slide.active {
+.slide.active {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 5000ms, 5000ms, 0ms;
 	transition-function: linear;
@@ -47,9 +41,9 @@ slide.active {
 	z-index: 10;
 }
 
-/* Slide activated by clicking next/prev navigation button.
+/* .slide activated by clicking next/prev navigation button.
  * May have, for instance, faster transition time, or a completely differen effect */
-slide.activated {
+.slide.activated {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 1000ms, 1000ms, 0ms;
 	transition-function: linear;
@@ -59,7 +53,7 @@ slide.activated {
 	z-index: 10;
 }
 
-slide.deactivated {
+.slide.deactivated {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 1000ms, 1000ms, 0ms;
 	transition-function: linear;
@@ -69,7 +63,7 @@ slide.deactivated {
 	z-index: 1;
 }
 
-slide span {
+.slide span {
 	display: block;
 	font-size: 30px;
 	position: absolute;

@@ -1,0 +1,17 @@
+html {
+	height: 100%;
+	background:
+		radial-gradient(ellipse at center, rgba(47,21,0, 0) 0%,rgba(47,21,0, 0) 32%,rgba(47,21,0, .5) 100%) fixed no-repeat center/100%,
+		url('../img/T00.png') fixed;
+	margin: 0;
+	padding: 0;
+	font-family: 'Alegreya Sans';
+	color: #2f1500;
+	text-shadow: 0 0 1px rgba(0,0,0, .1);
+}
+body {
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
