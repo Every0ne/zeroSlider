@@ -1,23 +1,27 @@
+'use strict'
+
 ;(function($){
 	$.fn.pureSlider = function(options) {
 
 		var pureSlider = function(container, options) {
 
+			// self-reference
+			var self = this;
 			// container with slides
-			this.container = container;
+			self.container = container;
 
 			// setTimeout/setInterval handle
-			this.loop = false;
+			self.loop = false;
 
 			// current slide
-			this.currentIndex = 0;
+			self.currentIndex = 0;
 
 			// duration of slide interval + slide transition
-			this.trueSlideDuration = 0;
+			self.trueSlideDuration = 0;
 
 			// First slide needs just the slide duration without transition.
-			this.firstRun = true;
-			this.defaults = {
+			self.firstRun = true;
+			self.defaults = {
 
 				//animDuration:  1,
 				slideDuration:  2000,
@@ -45,72 +49,72 @@
 				//randominit: false
 			};
 
-			this.options = options;
+			self.options = options;
 
-			for( var property in this.defaults ) {
-				if (this.defaults.hasOwnProperty(property) && !this.options.hasOwnProperty(property))
-					this.options[property] = this.defaults[property];
+			for( var property in self.defaults ) {
+				if (self.defaults.hasOwnProperty(property) && !self.options.hasOwnProperty(property))
+					self.options[property] = self.defaults[property];
 			}
 
-			this.elements = container.querySelectorAll( this.options.slideNode );
+			self.elements = container.querySelectorAll( self.options.slideNode );
 
-			this.init = function() {
+			self.init = function() {
 
 				// If there are no elements  on stage, remove all navigation
 				// and don't run the loop.
-				if( this.elements.length < 1 )
+				if( self.elements.length < 1 )
 				{
-					this.removeNavigation();
+					self.removeNavigation();
 					return;
 				}
 
-				this.elements[0].classList.add( this.options.activeClass );
+				self.elements[0].classList.add( self.options.activeClass );
 
 				// If there's only one slide, remove all navigation
 				// and don't run the loop.
-				if( this.elements.length == 1 )
+				if( self.elements.length == 1 )
 				{
-					this.removeNavigation();
+					self.removeNavigation();
 					return;
 				}
+
 				// If there's more than one slide, leave the navigation elements intact,
 				// register events on it, and run the loop.
-				else {
-					this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
-					this.runLoop();
 
-					var self = this;
-					var nextButton = this.container.querySelector( this.options.nextButton );
-					var prevButton = this.container.querySelector( this.options.prevButton );
+				self.trueSlideDuration = self.options.slideDuration + self.getTransitionDuration( self.elements[0] );
+				self.runLoop();
 
-					if( nextButton !== null )
-					{
-						nextButton.addEventListener('click', function(e){
-							e.preventDefault();
-							self.stopLoop();
-							self.next(true);
-							self.runLoop();
-						});
-					}
+				var nextButton = self.container.querySelector( self.options.nextButton );
+				var prevButton = self.container.querySelector( self.options.prevButton );
 
-					if( prevButton !== null )
-					{
-						prevButton.addEventListener('click', function(e){
-							e.preventDefault();
-							self.stopLoop();
-							self.prev(true);
-							self.runLoop();
-						});
-					}
+				if( nextButton !== null )
+				{
+					nextButton.addEventListener('click', function(e){
+						e.preventDefault();
+						self.stopLoop();
+						self.next(true);
+						self.runLoop();
+					});
 				}
+
+				if( prevButton !== null )
+				{
+					prevButton.addEventListener('click', function(e){
+						e.preventDefault();
+						self.stopLoop();
+						self.prev(true);
+						self.runLoop();
+					});
+				}
+
 			}
 
 
-			this.getTransitionDuration = function(elt){
+			self.getTransitionDuration = function(elt){
 				var duration, longest = 0;
 
 				// Get transition property from css of element.
-				durStrings = getComputedStyle(elt)['transition-duration'];
+				var durStrings = getComputedStyle(elt)['transition-duration'];
 
 				if(durStrings !== undefined)
 				{
@@ -137,100 +141,99 @@
 			};
 
 
-			this.runLoop = function() {
-				self = this;
+			self.runLoop = function() {
 
-				if(this.firstRun){
-					this.loop = setTimeout( function() {
+				if(self.firstRun){
+					self.loop = setTimeout( function() {
 						self.next();
 						self.runLoop();
-					}, this.options.slideDuration );
-					this.firstRun = false;
+					}, self.options.slideDuration );
+					self.firstRun = false;
 				}
 				else {
-					this.loop = setInterval( function() {
-					self.next();
-					}, this.trueSlideDuration );
+					self.loop = setInterval( function() {
+						self.next();
+					}, self.trueSlideDuration );
 				}
 			}
 
 
-			this.animate = function(current, next, activated) {
+			self.animate = function(current, next, activated) {
 
 				activated = activated === true ? true : false;
 
 				if(activated)
 				{
-					for( var i = 0; i < this.elements.length; i++ )
+					for( var i = 0; i < self.elements.length; i++ )
 					{
-						this.elements[i].classList.add( this.options.inactiveClass );
+						self.elements[i].classList.add( self.options.inactiveClass );
 					}
-					next.classList.remove( this.options.inactiveClass );
-					next.classList.add( this.options.altActiveClass );
+					next.classList.remove( self.options.inactiveClass );
+					next.classList.add( self.options.altActiveClass );
 				}
 				else
 				{
-					for( var i = 0; i < this.elements.length; i++ )
+					for( var i = 0; i < self.elements.length; i++ )
 					{
-						this.elements[i].classList.remove( this.options.inactiveClass );
+						self.elements[i].classList.remove( self.options.inactiveClass );
 					}
-					next.classList.add( this.options.activeClass );
+					next.classList.add( self.options.activeClass );
 				}
-				current.classList.remove( this.options.altActiveClass );
-				current.classList.remove( this.options.activeClass );
+				current.classList.remove( self.options.altActiveClass );
+				current.classList.remove( self.options.activeClass );
 			};
 
 
-			this.next = function(activated) {
+			self.next = function(activated) {
 				var next 	= null;
 				var current = null;
 
-				if(this.elements[this.currentIndex + 1])
+				if(self.elements[self.currentIndex + 1])
 				{
-					next 	= this.elements[this.currentIndex + 1];
-					current = this.elements[this.currentIndex];
-					this.currentIndex++;
+					next 	= self.elements[self.currentIndex + 1];
+					current = self.elements[self.currentIndex];
+					self.currentIndex++;
 				}
 				else
 				{
-					next 	= this.elements[0];
-					current = this.elements[this.currentIndex];
-					this.currentIndex = 0;
+					next 	= self.elements[0];
+					current = self.elements[self.currentIndex];
+					self.currentIndex = 0;
 				}
 
-				this.animate(current, next, activated);
+				self.animate(current, next, activated);
 			}
 
-			this.prev = function(activated) {
+			self.prev = function(activated) {
 				var next 	= null;
 				var current = null;
 
-				if(this.elements[this.currentIndex - 1])
+				if(self.elements[self.currentIndex - 1])
 				{
-					next 	= this.elements[this.currentIndex - 1];
-					current = this.elements[this.currentIndex];
-					this.currentIndex--;
+					next 	= self.elements[self.currentIndex - 1];
+					current = self.elements[self.currentIndex];
+					self.currentIndex--;
 				}
 				else
 				{
-					next 	= this.elements[this.elements.length - 1];
-					current = this.elements[this.currentIndex];
-					this.currentIndex = this.elements.length - 1;
+					next 	= self.elements[self.elements.length - 1];
+					current = self.elements[self.currentIndex];
+					self.currentIndex = self.elements.length - 1;
 				}
 
-				this.animate(current, next, activated);
+				self.animate(current, next, activated);
 			}
 
 
-			this.stopLoop = function(){
-				clearInterval(this.loop);
-				clearTimeout(this.loop);
-				this.firstRun = true;
+			self.stopLoop = function(){
+				clearInterval(self.loop);
+				clearTimeout(self.loop);
+				self.firstRun = true;
 			}
 
 
-			this.removeNavigation = function(){
-				Array.prototype.forEach.call( this.container.querySelectorAll( this.options.prevButton + ', ' + this.options.nextButton ), function(elt){
+			self.removeNavigation = function(){
+				Array.prototype.forEach.call( self.container.querySelectorAll( self.options.prevButton + ', ' + self.options.nextButton ), function(elt){
 					elt.parentNode.removeChild(elt);
 				});
 			}
