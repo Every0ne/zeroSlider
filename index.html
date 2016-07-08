@@ -1,9 +1,8 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>PureSlider Demo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -29,9 +28,24 @@
 			<div class="prev">&ltrif;</div>
 		</div>
 
+		<div class="stage2">
+			<div class="slide" style="background-image: url('assets/img/barrow.jpg')"><span>Slide one - a barrow</span></div>
+			<div class="slide" style="background-image: url('assets/img/blossom.jpg')"><span>Second slide. Blossom</span></div>
+			<div class="slide" style="background-image: url('assets/img/crocuses.jpg')"><span>Crocuses look calming on third slide.</span></div>
+			<div class="slide" style="background-image: url('assets/img/fog.jpg')"><span>Fog. 4th slide</span></div>
+			<div class="slide" style="background-image: url('assets/img/poppies.jpg')"><span>Poppies on fifth slide</span></div>
+			<div class="next">&rtrif;</div>
+			<div class="prev">&ltrif;</div>
+		</div>
+
 		<script>
 			$('.stage').pureSlider({
 				slideNode: '.slide'
+			});
+
+			$('.stage2').pureSlider({
+				slideNode: '.slide',
+				slideDuration: 1000
 			});
 		</script>
     </body>
