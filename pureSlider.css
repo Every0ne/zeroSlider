@@ -1,21 +1,18 @@
-.stage, .stage2 {
+/*░░░▒▒▒▓▓▓███  COMMON STAGE STYLING  ███████████████████████████████████████████████████▓▓▓▒▒▒░░░*/
+
+.stage {
     display: block;
     position: relative;
-    width: 90%;
-	margin: 0 auto;
+    width: 100%;
+	margin: 25px auto;
 	padding-bottom: 33%;
 	border: none;
 	overflow: hidden;
 	box-shadow: 0 0 10px rgba(47, 21, 0, 1);
 }
 
-/* Normal slide in inactive state */
 .slide {
-    transition-property: opacity, transform, z-index;
-	transition-duration: 0ms;
-	transition-function: linear;
-	transition-delay: 5000ms, 5000ms, 0ms;
-    display:block;
+    display: block;
     position: absolute;
 	width: 100%;
 	height: 100%;
@@ -26,12 +23,69 @@
     background-size: cover;
 	background-position: center;
     opacity: 0;
-	transform: scale(2) rotate(10deg);
 	z-index: 1;
 }
 
+.slide span {
+	display: block;
+	font-size: calc(.9vw + .9vh + .45vmin);
+	position: absolute;
+	bottom: 10%;
+	left: 4%;
+	background-color: rgba(0,0,0,.4);
+	padding: calc(.75vw + .75vh + .375vmin) calc(1.1vw + 1.1vh + .55vmin);
+	color: #ccc;
+	text-shadow: 1px 1px 1px rgba(0,0,0,.1);
+	border-radius: 4px;
+	font-weight: 300;
+}
+
+.next,
+.prev {
+	transition: 150ms linear all;
+	position: absolute;
+	top: 50%;
+	margin-top: -10px;
+	border-width: calc(.25vw + .25vh + .125vmin) calc(.25vw + .25vh + .125vmin) 0 0;
+	border-style: solid;
+	border-color: #fff;
+	width: calc(.75vw + .75vh + .375vmin);
+	height: calc(.75vw + .75vh + .375vmin);
+	cursor: pointer;
+	opacity: .5;
+	filter: drop-shadow(0 0 5px rgba(0,0,0,.1));
+}
+.next {
+	right: 25px; z-index: 10;
+	transform: rotate(45deg);
+}
+.prev {
+	left: 25px; z-index: 10;
+	transform: rotate(-135deg);
+}
+.next:hover,
+.next:active,
+.prev:hover,
+.prev:active {
+	opacity: 1;
+	filter: drop-shadow(0 0 5px rgba(0,0,0,.5));
+}
+
+
+
+/*░░░▒▒▒▓▓▓███  TRANSITION-BASED STAGE SLIDES  ██████████████████████████████████████████▓▓▓▒▒▒░░░*/
+
+/* Normal slide in vanilla/inactive state */
+#stage1 .slide {
+    transition-property: opacity, transform, z-index;
+	transition-duration: 0ms;
+	transition-function: linear;
+	transition-delay: 5000ms, 5000ms, 0ms;
+	transform: scale(2) rotate(10deg);
+}
+
 /* Active slide */
-.slide.active {
+#stage1 .slide.active {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 5000ms, 5000ms, 0ms;
 	transition-function: linear;
@@ -43,7 +97,7 @@
 
 /* .slide activated by clicking next/prev navigation button.
  * May have, for instance, faster transition time, or a completely differen effect */
-.slide.activated {
+#stage1 .slide.activated {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 1000ms, 1000ms, 0ms;
 	transition-function: linear;
@@ -53,7 +107,7 @@
 	z-index: 10;
 }
 
-.slide.deactivated {
+#stage1 .slide.deactivated {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 1000ms, 1000ms, 0ms;
 	transition-function: linear;
@@ -63,47 +117,64 @@
 	z-index: 1;
 }
 
-.slide span {
-	display: block;
-	font-size: 30px;
-	position: absolute;
-	bottom: 50px;
-	left: 50px;
-	background-color: rgba(255,255,255,.4);
-	padding: 15px 20px;
-	color: #000;
-	font-family: sans-serif;
-	text-shadow: 1px 1px 1px rgba(0,0,0,.1);
-	border-radius: 4px;
+
+
+/*░░░▒▒▒▓▓▓███  KEYFRAME-BASED STAGE SLIDES  ████████████████████████████████████████████▓▓▓▒▒▒░░░*/
+
+@keyframes visibility {
+	0% {
+		opacity: 0;
+		transform: scale(2) rotate(-10deg);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) rotate(0deg);
+	}
 }
 
+@keyframes z-index {
+	0% {
+		z-index: 0;
+	}
+	100% {
+		z-index: 10;
+	}
+}
 /* Navigation buttons */
 .next,
 .prev {
 	transition: 150ms linear all;
 	position: absolute;
 	top: 50%;
-	border-radius: 100px;
 	margin-top: -10px;
-	background-color: rgba(0,0,0,.65);
-	color: #fff;
-	text-align: center;
-	font-size: 30px;
-	line-height: 25px;
-	padding: 3px 3px;
-	text-shadow: 0 0 1px #000;
+	border-width: calc(.5vw + .5vh + .25vmin) calc(.5vw + .5vh + .25vmin) 0 0;
+	border-style: solid;
+	border-color: #fff;
+	width: calc(1vw + 1vh + .5vmin);
+	height: calc(1vw + 1vh + .5vmin);
 	cursor: pointer;
 	opacity: .5;
+	filter: drop-shadow(0 0 5px rgba(0,0,0,.1));
 }
-.next:hover,
-.next:active,
-.prev:hover,
-.prev:active {
-	opacity: 1;
+
+#stage2 .slide.active {
+	animation:
+		visibility 5s 0s 1 forwards,
+		z-index 0s 0s 1 forwards;
 }
-.next {
-	right: 25px; z-index: 10;
+
+#stage2 .slide.activated {
+	animation:
+		visibility 1s 0s 1 both,
+		z-index 0s 0s 1 both;
+}
+
+#stage2 .slide.deactivated {
+	animation:
+		visibility 1s 0s 1 both reverse,
+		z-index 0s 0s 1 both reverse;
 }
 .prev {
 	left: 25px; z-index: 10;
+	transform: rotate(-135deg);
 }

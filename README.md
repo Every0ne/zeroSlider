@@ -3,7 +3,7 @@ A slider as simple and lightweight as it can be. Provide some css classes with t
 
 ### Advantages?
 - lightweight,
-- jQuery, Zepto and jBone compatible,
+- ~~cash, jBone, jQuery and Zepto compatible~~ completely library-agnostic, with an "adapter" so that it can be used with any jQuery-compatible library,
 - does what is absolutely necessary and nothing more,
 - no ugly inline styling,
 - doltishly easy to integrate with any kind of html generator,
@@ -14,7 +14,53 @@ A slider as simple and lightweight as it can be. Provide some css classes with t
 - not a tool for the braindead or the lazy, this ain't an "everything & the kitchen sink" solution.
 
 ### How?
-While a proper example would be nice, that's all I have time for right now, so you just have to settle for downloading the package and looking thru HTML and CSS, but things should be pretty straight-forward.
+Include pureSlider.js in your document, then:
+- get some basic markup:
+```html
+<div class="stage">
+	<div class="slide first"></div>
+	<div class="slide second"></div>
+	<div class="slide third"></div>
+</div>
+```
+- add a bit of CSS:
+```css
+.stage {
+  width: 300px;
+  height: 200px;
+  margin: 30px auto;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: all 1s linear;
+}
+
+.slide.active {
+  opacity: 1;
+  transition: all 1s linear;
+}
+
+.slide.first {background: #f00}
+.slide.second {background: #0f0}
+.slide.third {background: #00f}
+```
+
+- run pureSlider, feeding it the "stage" DOM element:
+```javascript
+PureSlider(document.querySelector('.stage'));
+```
+
+- enjoy!
+
+A proper demo page with more examples is in the works. Meanwhile for more details take a look at HTML and CSS in the package. Everything should be pretty straight-forward.
 
 ### Why?
 I needed a simple slider for page hero banner. While there are dozens of those out there, none of them worked for me because of many reasons: too bulky, hard to integrate in my projects, not responsive, generated lots of javascript (mis)calculated inline crap styling that was breaking the page layout or the actual slider content they supposed to render or finally requiring some special markup pattern that was, again, conflicting with the prepared layout.
