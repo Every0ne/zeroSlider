@@ -32,8 +32,8 @@ var PureSlider = function(container, options) {
 		nextButton: '.next',
 		prevButton: '.prev',
 		activeClass: 'active',
-		altActiveClass: 'activated',
-		inactiveClass: 'deactivated',
+		altActiveClass: 'active',
+		inactiveClass: '',
 		autorun: true,
 
 		/**
