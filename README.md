@@ -70,7 +70,7 @@ var slider = PureSlider( <element>, {
 	prevButton: '.prev', // Node inside <element> to use as previous slide button
 	activeClass: 'active', // Currently active slide is given this class
 	altActiveClass: 'active', // Slide activated by pressing next/prev button is given this class
-	inactiveClass: '', // Slides deactivated by manually switching a slide are given this class
+	inactiveClass: 'deactivated', // Slides deactivated by manually switching a slide are given this class
 	autorun: true, // loop slides since start or not?
 });
 ```
