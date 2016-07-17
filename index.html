@@ -14,7 +14,7 @@
 		<link rel="stylesheet" href="assets/css/main.css">
         <link rel="stylesheet" href="pureSlider.css">
 
-        <script type="text/javascript" src="assets/js/zepto.js"></script>
+        <!--<script type="text/javascript" src="assets/js/zepto.js"></script>-->
 		<script type="text/javascript" src="pureSlider.js"></script>
     </head>
     <body>
@@ -45,19 +45,21 @@
 		<p>Looks like keyframes-based slide switching doesn't work too well. The "from-to" animation doesn't react to the mid-state of transition that a slide was in. That's by design and very little can be done to mitigate it. Even then slide switching will look strange and buggy. Best is to just keep with transitions between classes.</p>
 
 		<script>
-		/*
+
 			var slider1 = PureSlider( document.querySelector('#stage1') );
 
-			var slider2 = new PureSlider( document.querySelector('#stage2'), {
+			PureSlider( document.querySelector('#stage2'), {
 				slideNode: '.slide',
 				slideDuration: 8000
 			});
-		*/
+
+		/*
 			var haa = $('#stage1').pureSlider();
 
 			$('#stage2').pureSlider({
 				slideDuration: 10000,
 			});
+		*/
 		</script>
     </body>
 </html>

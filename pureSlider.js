@@ -1,25 +1,5 @@
 'use strict';
 
-var Marker = function() {
-	
-	this.getStamp = function() {
-		var d = new Date();
-		return d.getTime();
-	}
-
-	this.stamp = this.getStamp();
-	this.now = 0;
-	this.difference = 0;
-}
-
-Marker.prototype.mark = function(){
-	this.now = this.getStamp();
-	this.difference = this.now - this.stamp;
-	console.log(this.difference);
-	this.stamp = this.getStamp();
-}
-
-
 var PureSlider = function(container, options) {
 
 	if( !( this instanceof PureSlider ) ){
@@ -32,12 +12,10 @@ var PureSlider = function(container, options) {
 	// container with slides
 	this.container = container;
 
-	this.marker = new Marker();
-
 	// setTimeout/setInterval handle
 	this.loop = false;
-	this.marker.mark();
-	// current slide
+
+	// current index for prev/current/next slide determination
 	this.currentIndex = 0;
 
 	// duration of slide interval + slide transition
@@ -45,9 +23,10 @@ var PureSlider = function(container, options) {
 
 	// First slide needs just the slide duration without transition.
 	this.firstRun = true;
+
+	// Default options
 	this.defaults = {
 
-		//animDuration:  1,
 		slideDuration:  2000,
 		slideNode: 'div.slide',
 		nextButton: '.next',
@@ -55,26 +34,18 @@ var PureSlider = function(container, options) {
 		activeClass: 'active',
 		altActiveClass: 'activated',
 		inactiveClass: 'deactivated',
-
-		/**
-		 * Show slide switches? TODO - needs implementing, currently does nothing
-		 */
-		//showSlideButtons: true,
-
-		/**
-		 *  Autoinit sliding? TODO - needs implementing, currently does nothing
-		 */
-		//autorun: true,
+		autorun: true,
 
 		/**
 		 *  Random init? TODO - needs implementing, currently does nothing
 		 */
-		//randominit: false
+		//randomStart: false
 	};
 
+	// Populate/Zero options
 	this.options = options ? options : {};
 
-	// Populating options with default values for unset properties
+	// Populate options with default values for unset properties
 	for( var property in this.defaults ) {
 		if( this.defaults.hasOwnProperty(property) && !this.options.hasOwnProperty(property) )
 			this.options[property] = this.defaults[property];
@@ -111,7 +82,6 @@ PureSlider.prototype.init = function() {
 	// If there's more than one slide, leave the navigation elements intact,
 	// register events on it, and run the loop.
 	this.trueSlideDuration = this.options.slideDuration + this.getTransitionDuration( this.elements[0] );
-	this.runLoop();
 
 	var self = this.me;
 
@@ -125,7 +95,7 @@ PureSlider.prototype.init = function() {
 				self.next(true);
 				self.runLoop();
 				break;
-			
+
 			case e.target.matches( self.options.prevButton ):
 				self.stopLoop();
 				self.prev(true);
@@ -133,6 +103,9 @@ PureSlider.prototype.init = function() {
 				break;
 		}
 	});
+
+	if(this.options.autorun)
+		this.runLoop();
 }
 
 
@@ -154,9 +127,9 @@ PureSlider.prototype.getTransitionDuration = function(elt){
 		for(var i = 0; i < durStrings.length; i++)
 		{
 			// Check if defined as miliseconds.
-			// Get numerical part from string. Parse numerical string to number.
+			// Get numerical part from string and parse it to number.
 			// If number was not defined as miliseconds, then convert it to miliseconds.
-			duration = (durStrings[i].indexOf("ms")>-1) ? parseFloat(durStrings[i]) : parseFloat(durStrings[i])*1000;
+			duration = ( durStrings[i].indexOf("ms") > -1 ) ? parseFloat( durStrings[i] ) : parseFloat( durStrings[i] ) * 1000;
 
 			// As transition may have many durations, we care only for the longest one.
 			longest = duration > longest ? duration : longest;
@@ -170,18 +143,16 @@ PureSlider.prototype.getTransitionDuration = function(elt){
 PureSlider.prototype.runLoop = function() {
 	var self = this.me;
 
-	if(this.firstRun){
+	if( this.firstRun ){
 		this.loop = setTimeout( function() {
 			self.next();
 			self.runLoop();
-			self.marker.mark();
 		}, this.options.slideDuration );
 		this.firstRun = false;
 	}
 	else {
 		this.loop = setInterval( function() {
 		self.next();
-		self.marker.mark();
 		}, this.trueSlideDuration );
 	}
 }
@@ -208,8 +179,7 @@ PureSlider.prototype.animate = function(current, next, activated) {
 		}
 		next.classList.add( this.options.activeClass );
 	}
-	current.classList.remove( this.options.altActiveClass );
-	current.classList.remove( this.options.activeClass );
+	current.classList.remove( this.options.activeClass, this.options.altActiveClass );
 };
 
 
@@ -227,7 +197,6 @@ PureSlider.prototype.getSlide = function(relativeOrder) {
 
 	/* JavaScript implementation of Modulo throws negative numbers
 	 * from negative dividends. In this case this needs to be fixed.
-	 * from negative divisors. In this case this needs to be fixed.
 	 * Algorhythm taken from http://javascript.about.com/od/problemsolving/a/modulobug.htm
 	 */
 	return this.elements[ ((n % l) + l) % l ];
@@ -235,16 +204,12 @@ PureSlider.prototype.getSlide = function(relativeOrder) {
 
 
 PureSlider.prototype.next = function(activated) {
-	//console.log('Current index: ' + this.currentIndex); // DEBUG!
-	console.log('Current index: ' + this.currentIndex); // DEBUG!
 	this.animate(this.getSlide(0), this.getSlide(1), activated);
 	this.currentIndex++;
 };
 
 
 PureSlider.prototype.prev = function(activated) {
-	//console.log('Current index: ' + this.currentIndex); // DEBUG!
-	console.log('Current index: ' + this.currentIndex); // DEBUG!
 	this.animate(this.getSlide(0), this.getSlide(-1), activated);
 	this.currentIndex--;
 };
@@ -266,10 +231,12 @@ PureSlider.prototype.removeNavigation = function(){
 
 // jQuery-compatible libraries adapter
 (function($){
-	$.fn.pureSlider = function(options) {
+	if($ !== undefined){
+		$.fn.pureSlider = function(options) {
 
-		return this.toArray().forEach( function(elt) {
-			PureSlider( elt, options );
-		});
+			return this.toArray().forEach( function(elt) {
+				PureSlider( elt, options );
+			});
+		}
 	}
 })(this.$ || this.cash || this.jQuery || this.Zepto || this.jBone);
