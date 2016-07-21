@@ -32,11 +32,13 @@ var PureSlider = function(container, options) {
 	// container with slides
 	this.container = container;
 
+	// DEBUG marker displaying time passed since last call
 	this.marker = new Marker();
+	this.marker.mark();
 
 	// setTimeout/setInterval handle
 	this.loop = false;
-	this.marker.mark();
+
 	// current index for prev/current/next slide determination
 	this.currentIndex = 0;
 
@@ -53,9 +55,8 @@ var PureSlider = function(container, options) {
 		slideNode: 'div.slide',
 		nextButton: '.next',
 		prevButton: '.prev',
-		activeClass: 'active',
-		altActiveClass: 'activated',
-		inactiveClass: 'deactivated',
+		activeClass: 'on',
+		toggleClass: 'toggled',
 		autorun: true,
 
 		/**
@@ -195,20 +196,17 @@ PureSlider.prototype.animate = function(current, next, activated) {
 	{
 		for( var i = 0; i < this.elements.length; i++ )
 		{
-			this.elements[i].classList.add( this.options.inactiveClass );
+			this.elements[i].classList.add( this.options.toggleClass );
 		}
-		next.classList.remove( this.options.inactiveClass );
-		next.classList.add( this.options.altActiveClass );
+		next.classList.add( this.options.activeClass );
+		current.classList.remove( this.options.activeClass );
 	}
 	else
 	{
-		for( var i = 0; i < this.elements.length; i++ )
-		{
-			this.elements[i].classList.remove( this.options.inactiveClass );
-		}
+		next.classList.remove( this.options.toggleClass );
 		next.classList.add( this.options.activeClass );
+		current.classList.remove( this.options.activeClass, this.options.toggleClass );
 	}
-	current.classList.remove( this.options.activeClass, this.options.altActiveClass );
 };
 
 
