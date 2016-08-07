@@ -1,55 +1,19 @@
 'use strict';
 
-var Marker = function(){
-
-	this.getStamp = function(){
-		var d = new Date();
-		return d.getTime();
-	}
-
-	this.stamp = this.getStamp();
-	this.now = 0;
-	this.difference = 0;
-};
-
-Marker.prototype.mark = function(str){
-	this.now = this.getStamp();
-	this.difference = this.now - this.stamp;
-	str = str ? this.difference+' '+str : this.difference;
-	console.log(str);
-	this.stamp = this.getStamp();
-};
-
-
-/**
- *  @brief PureSlider object constructor
- *
- *  @param [in] container - the Stage DOM element housing all Slides and UI Controls.
- *  @param [in] options - object with optional params.
- *  @return Optionally returns itself when called without "new" keyword.
- */
-var PureSlider = function(container, options){
+var PureSlider = function( container, options ){
 
 	if( !( this instanceof PureSlider ) ){
 		return new PureSlider(container, options);
 	}
 
-	// self-reference for use in callbacks
+	// self-reference - a bit of a hack
 	this.me = this;
 
 	// container with slides
 	this.container = container;
 
-	// DEBUG marker displaying time passed since last call
-	this.marker = new Marker();
-	this.marker.mark();
-
 	// setTimeout/setInterval handle
 	this.loop = false;
-
-	// Flags
-	this.isRunning = true;
-	this.isFocused = false;
 
 	// current index for prev/current/next slide determination
 	this.currentIndex = 0;
@@ -67,142 +31,119 @@ var PureSlider = function(container, options){
 		pauseOnFocus: true,
 	};
 
+	this.events = {
+		transitionOnBegin :  new Event( 'ps:transition.on.begin' ),
+		transitionOnEnd :    new Event( 'ps:transition.on.end' ),
+		transitionOffBegin : new Event( 'ps:transition.off.begin' ),
+		transitionOffEnd :   new Event( 'ps:transition.off.end' ),
+		slideDurationBegin : new Event( 'ps:slide.duration.begin' ),
+		slideDurationEnd :   new Event( 'ps:slide.duration.end' ),
+	}
+
+	// Flags
+	this.isRunning = true;
+	this.isFocused = false;
+
 	// Populate/Zero options
 	this.options = options ? options : {};
 
-	this.init();
-};
-
-
-/**
- *  @brief Slider initiation function.
- *
- *  @details Fetches slides, builds options from defaults and submitted, adds event listeners.
- */
-PureSlider.prototype.init = function(){
-
-	// Populate options with default values for unset properties,
+	// Populate options with default values for unset properties
 	for( var property in this.defaults ){
 		if( this.defaults.hasOwnProperty( property ) && !this.options.hasOwnProperty(property) )
 			this.options[property] = this.defaults[property];
 	}
 
-	// Fetch slides.
 	this.slides = this.container.querySelectorAll( this.options.slideNode );
 
-	// Remove nav controls when not enough slides.
-	if( this.slides.length < 2 )
+	this.init();
+};
+
+
+PureSlider.prototype.init = function(){
+
+	// If there are no elements on stage, remove all navigation controls and stop.
+	if( this.slides.length < 1 )
 	{
 		this.removeNavigation();
-
-		// If there's at least one slide, activate it and quit.
-		if( this.slides.length == 1 )
-			this.slides[0].classList.add( this.options.activeClass );
-
 		return;
 	}
 
+	// First condition not met, so there's at least one element,
+	// this one should get activated.
+	this.reflow();
+	this.slides[0].classList.add( this.options.activeClass );
+
+	// If there's only one slide, remove all navigation
+	// and don't run the loop.
+	if( this.slides.length == 1 )
+	{
+		this.removeNavigation();
+		return;
+	}
+
+	// If there's more than one slide, leave the navigation elements intact,
+	// register events on it, and run the loop.
+
 	var self = this.me;
 
-	// UI interaction events.
 	this.container.addEventListener( 'click', function( event ){
 		event.preventDefault();
 
 		switch( true ){
+
 			case event.target.matches( self.options.nextButton ):
-				self.next(true);
+				self.next( true );
 				break;
 
 			case event.target.matches( self.options.prevButton ):
-				self.prev(true);
+				self.prev( true );
 				break;
 		}
 	});
 
-	// Mouse is hovering over stage.
+	// mouse is hovering over stage
 	this.container.addEventListener( 'mouseover', function(){
 		self.isFocused = true;
 	});
 
-	// Mouse is leaving the stage.
-	this.container.addEventListener( 'mouseleave', function(){
+	// mouse is leaving the stage
+	this.container.addEventListener( 'mouseout', function(){
 		self.isFocused = false;
-		console.log(self.isRunning);
 		if(!self.isRunning)
-			self.run();
+			self.container.dispatchEvent( 'ps:slide.duration.end' );
 	});
 
-	// Start the loop.
-	this.currentIndex--;
-	this.reflow();
-	this.run();
-};
-
-
-/**
- *  @brief Gets transition duration of a slide
- *
- *  @param [in] slide element.
- *
- *  @return returns a number of miliseconds
- *
- *  @details Gets a string of durations of all transitioning elements,
- *  parses it to an array of numbers and returns the number of miliseconds of the longest one.
- *  Used to determine how long will the transition take so when to run the idle (slide duration) loop part,
- */
-PureSlider.prototype.getTransitionDuration = function( elt ){
-	var durations = getComputedStyle( elt )['transition-duration'].toLowerCase().split(',').map( function( duration ){
-		return ( duration.indexOf("ms") > -1 ) ? parseFloat( duration ) : parseFloat( duration ) * 1000;
+	this.container.addEventListener( 'ps:transition.on.end', function( e ){
+		setTimeout( function(){
+			self.container.dispatchEvent( self.events.slideDurationEnd )
+		}, self.options.slideDuration );
 	});
 
-	return Math.max.apply( null, durations );
+	this.container.addEventListener( 'ps:slide.duration.end', function(){
+		if(!this.options.autorun || (this.options.pauseOnFocus && this.isFocused))
+		{
+			self.isRunning = false;
+			return;
+		}
+
+		self.isRunning = true;
+		self.next();
+	});
 };
 
 
 /**
- *  @brief Runs the idle part of the loop.
- *
- *  @details After the slide idle duration runs the slide cycle loop.
+ * @brief Gets a slide relative to current index.
+ * 
+ * @param [in] relativeOrder - takes a number as relativity factor where 0 means current,
+ * 1 means one forward ( next ),
+ * 2 means two forward,
+ * -1 means one backward ( previous ), and so on.
+ * @return returns a slide pointed by relativeOrder
+ * 
+ * @details Details
  */
-PureSlider.prototype.idle = function(){
-	this.marker.mark('Idle');
-	this.loop = setTimeout( this.run.bind(this), this.options.slideDuration );
-};
-
-
-/**
- *  @brief Runs the slide cycle loop.
- *
- *  @details Checks if all conditions for running the loop are met.
- *  If so, sets the run flag and switches slides to next one.
- *  If slider autorun is disabled or stage has focus, disables the run flag and stops.
- */
-PureSlider.prototype.run = function(){
-	if(!this.options.autorun || (this.options.pauseOnFocus && this.isFocused))
-	{
-		this.marker.mark('Stopping');
-		this.isRunning = false;
-		return;
-	}
-
-	this.marker.mark('Running');
-	this.isRunning = true;
-	this.next();
-};
-
-
-/**
- *  @brief Gets a slide relative to current index.
- *
- *  @param [in] relativeOrder - takes a number as relativity factor where 0 means current,
- *  1 means one forward (next),
- *  2 means two forward,
- *  -1 means one backward (previous), and so on.
- *  @return returns a slide pointed by relativeOrder
- *
- *  @details Details
- */
-PureSlider.prototype.getSlide = function(relativeOrder){
+PureSlider.prototype.getSlide = function( relativeOrder ){
 	var	n = this.currentIndex + relativeOrder,
 		l = this.slides.length;
 
@@ -210,49 +151,34 @@ PureSlider.prototype.getSlide = function(relativeOrder){
 	 * from negative dividends. In this case this needs to be fixed.
 	 * Algorhythm taken from http://javascript.about.com/od/problemsolving/a/modulobug.htm
 	 */
-	return this.slides[ ((n % l) + l) % l ];
+	return this.slides[ ( ( n % l ) + l ) % l ];
 };
 
 
-/**
- *  @brief Shifts current slide with next/previous slide.
- *
- *  @param [in] isToggled - boolean. If true, means that slide switch was made by user.
- *
- *  @details Fetches current and next/previous slide and feeds it to the animation function
- *  along with isToggled param, then insreases/decreases the index.
- */
-PureSlider.prototype.next = function(isToggled){
-	this.animate(this.getSlide(0), this.getSlide(1), isToggled);
+PureSlider.prototype.next = function( isToggled ){
+	this.animate( this.getSlide( 0 ), this.getSlide( 1 ), isToggled );
 	this.currentIndex++;
 };
-PureSlider.prototype.prev = function(isToggled){
-	this.animate(this.getSlide(0), this.getSlide(-1), isToggled);
+
+
+PureSlider.prototype.prev = function( isToggled ){
+	this.animate( this.getSlide( 0 ), this.getSlide( -1 ), isToggled );
 	this.currentIndex--;
 };
 
 
-/**
- *  @brief Turns slides on and off.
- *
- *  @param [in] current - currently active slide element to deactivate,
- *  @param [in] next - next slide element to activate,
- *  @param [in] isToggled - boolean indicating if slide switch was ordered by user.
- */
-PureSlider.prototype.animate = function(current, next, isToggled){
-	this.marker.mark('Shifting. Current index: ' + this.currentIndex);
+PureSlider.prototype.animate = function( current, next, isToggled ){
 
 	var
-		on      = this.options.activeClass,
-		toggle  = this.options.toggleClass;
+		on = this.options.activeClass,
+		toggle = this.options.toggleClass;
 
-	if(isToggled)
+	if( isToggled === true )
 	{
-		clearTimeout( this.loop );
-
 		for( var i = 0; i < this.slides.length; i++ )
+		{
 			this.slides[i].classList.add( toggle );
-
+		}
 		next.classList.add( on );
 		current.classList.remove( on );
 	}
@@ -263,41 +189,59 @@ PureSlider.prototype.animate = function(current, next, isToggled){
 		current.classList.remove( on, toggle );
 	}
 
-	this.isRunning = true;
-	this.loop = setTimeout( this.idle.bind(this), this.getTransitionDuration(next) );
+	this.announceTransitionEnd( next );
+};
+
+
+PureSlider.prototype.addTransitionsEndListener = function( slide ){
+	var
+		transitionProp = getComputedStyle( slide, null )['transition-property'] || '',
+		transitionCount = transitionProp.split( ',' ).length,
+		self = this.me;
+
+	console.log('Transitition: Props: ' + transitionProp + '; Count: ' + transitionCount + ';');
+
+	function countdown( event ){
+		console.log( 'Done: ' + event.propertyName );
+		transitionCount--;
+
+		if( transitionCount <= 0 )
+		{
+			console.log( 'All transitions finished' );
+			slide.removeEventListener( 'transitionend', countdown );
+			self.container.dispatchEvent( self.events.transitionOnEnd );
+		}
+	}
+
+	slide.addEventListener( 'transitionend', countdown )
 };
 
 
 /**
- *  @brief Removes navigation controls. Useful if there's less than 2 slides on stage.
- */
-PureSlider.prototype.removeNavigation = function(){
-	Array.prototype.forEach.call( this.container.querySelectorAll( this.options.prevButton + ', ' + this.options.nextButton ), function(elt){
-		elt.parentNode.removeChild(elt);
-	});
-};
-
-
-/**
- *  @brief Forces browser to do a repaint.
- *  @return returns the offsetHeight of container.
- *  @details Hack is necessary in Firefox to force proper transition of first slide.
+ * @brief Forces browser to do a repaint.
+ * @return returns the offsetHeight of container.
+ * @details Hack is necessary in Firefox to force proper transition of first slide.
  */
 PureSlider.prototype.reflow = function(){
 	return this.container.offsetHeight;
 };
 
 
+PureSlider.prototype.removeNavigation = function(){
+	Array.prototype.forEach.call( this.container.querySelectorAll( this.options.prevButton + ', ' + this.options.nextButton ), function( elt ){
+		elt.parentNode.removeChild( elt );
+	});
+};
 
 
 // jQuery-compatible libraries adapter
-(function($){
-	if($ !== undefined){
-		$.fn.pureSlider = function(options){
+( function( $ ){
+	if( $ !== undefined ){
+		$.fn.pureSlider = function( options ){
 
-			return this.toArray().forEach( function(elt){
+			return this.toArray().forEach( function( elt ){
 				PureSlider( elt, options );
 			});
 		}
 	}
-})(this.$ || this.cash || this.jQuery || this.Zepto || this.jBone);
+})( this.$ || this.cash || this.jQuery || this.Zepto || this.jBone );
