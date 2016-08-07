@@ -60,6 +60,22 @@ PureSlider(document.querySelector('.stage'));
 
 - enjoy!
 
+### Options?
+Why not? Here, take a look at defaults:
+```javascript
+var slider = PureSlider( <element>, {
+	slideDuration:  2000, // How much time passes between slide switch
+	slideNode: 'div.slide', // Nodes inside <element> to use as slide
+	nextButton: '.next', // Node inside <element> to use as next slide button
+	prevButton: '.prev', // Node inside <element> to use as previous slide button
+	activeClass: 'active', // Currently active slide is given this class
+	altActiveClass: 'active', // Slide activated by pressing next/prev button is given this class
+	inactiveClass: 'deactivated', // Slides deactivated by manually switching a slide are given this class
+	autorun: true, // loop slides since start or not?
+});
+```
+Aditionally having a reference to the slider gives more control over it, so it's possible to `slider.next()`, `slider.prev()`, `slider.stopLoop()`, `slider.runLoop()` and such, whenever there's a need for such fancities.
+
 A proper demo page with more examples is in the works. Meanwhile for more details take a look at HTML and CSS in the package. Everything should be pretty straight-forward.
 
 ### Why?
@@ -69,7 +85,7 @@ That's why I made my own, based on what's already available - CSS transitions.
 
 ### TODO?
 pureSlider is still missing a few features that I want to integrate as soon as I have some time to spare:
-- disable autosliding,
+- play state functionality maybe?
 - random start,
 - support for more slide states for transitions,
 - make a proper landing page with example CSS transition classes,
