@@ -1,26 +1,5 @@
 'use strict';
 
-var Marker = function(){
-
-	this.getStamp = function(){
-		var d = new Date();
-		return d.getTime();
-	}
-
-	this.stamp = this.getStamp();
-	this.now = 0;
-	this.difference = 0;
-};
-
-Marker.prototype.mark = function(str){
-	this.now = this.getStamp();
-	this.difference = this.now - this.stamp;
-	str = str ? this.difference+' '+str : this.difference;
-	console.log(str);
-	this.stamp = this.getStamp();
-};
-
-
 /**
  *  @brief PureSlider object constructor
  *
@@ -39,10 +18,6 @@ var PureSlider = function(container, options){
 
 	// container with slides
 	this.container = container;
-
-	// DEBUG marker displaying time passed since last call
-	this.marker = new Marker();
-	this.marker.mark();
 
 	// setTimeout/setInterval handle
 	this.loop = false;
@@ -165,7 +140,6 @@ PureSlider.prototype.getTransitionDuration = function( elt ){
  *  @details After the slide idle duration runs the slide cycle loop.
  */
 PureSlider.prototype.idle = function(){
-	this.marker.mark('Idle');
 	this.loop = setTimeout( this.run.bind(this), this.options.slideDuration );
 };
 
@@ -180,12 +154,10 @@ PureSlider.prototype.idle = function(){
 PureSlider.prototype.run = function(){
 	if(!this.options.autorun || (this.options.pauseOnFocus && this.isFocused))
 	{
-		this.marker.mark('Stopping');
 		this.isRunning = false;
 		return;
 	}
 
-	this.marker.mark('Running');
 	this.isRunning = true;
 	this.next();
 };
@@ -240,7 +212,6 @@ PureSlider.prototype.prev = function(isToggled){
  *  @param [in] isToggled - boolean indicating if slide switch was ordered by user.
  */
 PureSlider.prototype.animate = function(current, next, isToggled){
-	this.marker.mark('Shifting. Current index: ' + this.currentIndex);
 
 	var
 		on      = this.options.activeClass,
