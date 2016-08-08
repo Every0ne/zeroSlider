@@ -102,15 +102,23 @@ PureSlider.prototype.init = function(){
 	// Mouse is leaving the stage.
 	this.container.addEventListener( 'mouseleave', function(){
 		self.isFocused = false;
-		console.log(self.isRunning);
+
 		if(!self.isRunning)
 			self.run();
 	});
 
-	// Start the loop.
-	this.currentIndex--;
+	// Force a reflow...
 	this.reflow();
-	this.run();
+
+	// then run the loop if autorun is enabled,
+	if(this.options.autorun)
+	{
+		this.currentIndex--;
+		this.run();
+	}
+	// or just activate the first slide.
+	else
+		this.slides[0].classList.add( this.options.activeClass );
 };
 
 
