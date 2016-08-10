@@ -5,6 +5,7 @@
  *
  *  @param [in] container - the Stage DOM element housing all Slides and UI Controls.
  *  @param [in] options - object with optional params.
+ * 
  *  @return Optionally returns itself when called without "new" keyword.
  */
 var PureSlider = function(container, options){
@@ -178,9 +179,8 @@ PureSlider.prototype.run = function(){
  *  1 means one forward (next),
  *  2 means two forward,
  *  -1 means one backward (previous), and so on.
+ * 
  *  @return returns a slide pointed by relativeOrder
- *
- *  @details Details
  */
 PureSlider.prototype.getSlide = function(relativeOrder){
 	var	n = this.currentIndex + relativeOrder,
