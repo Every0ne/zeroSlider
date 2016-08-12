@@ -70,11 +70,11 @@ $('.stage').pureSlider();
 ### Options?
 Why not? Here, take a look at defaults:
 ```javascript
-var slider = PureSlider( <selector string | DOM node>, {
+var slider = PureSlider( <stage>, { // "Stage" housing slides and controls. Can be a DOM node or a selector string.
 	slideDuration:  2000, // How much time passes between slide switch
-	slideNode: 'div.slide', // Nodes inside <element> to use as slide
-	nextButton: '.next', // Node inside <element> to use as next slide button
-	prevButton: '.prev', // Node inside <element> to use as previous slide button
+	slideNode: 'div.slide', // Nodes inside <stage> to use as slide
+	nextButton: '.next', // Node inside <stage> to use as next slide button
+	prevButton: '.prev', // Node inside <stage> to use as previous slide button
 	activeClass: 'on', // Currently active slide is given this class
 	toggleClass: 'toggle', // Class attached additionally to user-activated/deactivated slides
 	autorun: true, // loop slides since start or not?
