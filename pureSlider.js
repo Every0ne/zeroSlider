@@ -173,6 +173,18 @@ PureSlider.prototype.run = function(){
 
 
 /**
+ *  @brief Stops the slide cycle loop.
+ *
+ *  @details Note that loop will restart if next/prev is executed,
+ *  unless this.options.autorun is set to false.
+ */
+PureSlider.prototype.stop = function(){
+	clearTimeout( this.loop );
+	this.isRunning = false;
+}
+
+
+/**
  *  @brief Gets a slide relative to current index.
  *
  *  @param [in] relativeOrder - takes a number as relativity factor where 0 means current,
@@ -227,7 +239,7 @@ PureSlider.prototype.animate = function(current, next, isToggled){
 
 	if(isToggled)
 	{
-		clearTimeout( this.loop );
+		this.stop();
 
 		for( var i = 0; i < this.slides.length; i++ )
 			this.slides[i].classList.add( toggle );
