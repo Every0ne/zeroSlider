@@ -43,7 +43,7 @@ Include pureSlider.js in your document, then:
   transition: all 1s linear;
 }
 
-.slide.active {
+.slide.on {
   opacity: 1;
   transition: all 1s linear;
 }
