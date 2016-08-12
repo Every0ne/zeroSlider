@@ -10,7 +10,7 @@ A slider as simple and lightweight as it can be. Provide some css classes with t
 - not restricting you to preprogrammed effects or markup pattern, *you* design the effects used on *your* markup.
 
 ### Disadvantages?
-- won't do anything for you, infact it does very littly on its own,
+- won't do anything for you, infact it does very little on its own,
 - not a tool for the braindead or the lazy, this ain't an "everything & the kitchen sink" solution.
 
 ### How?
@@ -53,9 +53,16 @@ Include pureSlider.js in your document, then:
 .slide.third {background: #00f}
 ```
 
-- run pureSlider, feeding it the "stage" DOM element:
+- run pureSlider, feeding it the "stage" DOM element either as node or just a selector string:
 ```javascript
+// like this:
 PureSlider(document.querySelector('.stage'));
+
+// or this:
+PureSlider('.stage');
+
+// or like this if you have a jQuery-like library:
+$('.stage').pureSlider();
 ```
 
 - enjoy!
@@ -63,18 +70,20 @@ PureSlider(document.querySelector('.stage'));
 ### Options?
 Why not? Here, take a look at defaults:
 ```javascript
-var slider = PureSlider( <element>, {
+var slider = PureSlider( <selector string | DOM node>, {
 	slideDuration:  2000, // How much time passes between slide switch
 	slideNode: 'div.slide', // Nodes inside <element> to use as slide
 	nextButton: '.next', // Node inside <element> to use as next slide button
 	prevButton: '.prev', // Node inside <element> to use as previous slide button
-	activeClass: 'active', // Currently active slide is given this class
-	altActiveClass: 'active', // Slide activated by pressing next/prev button is given this class
-	inactiveClass: 'deactivated', // Slides deactivated by manually switching a slide are given this class
+	activeClass: 'on', // Currently active slide is given this class
+	toggleClass: 'toggle', // Class attached additionally to user-activated/deactivated slides
 	autorun: true, // loop slides since start or not?
+	pauseOnFocus: true, // will mouse-hovering over stage halt slide switching?
 });
 ```
-Aditionally having a reference to the slider gives more control over it, so it's possible to `slider.next()`, `slider.prev()`, `slider.stopLoop()`, `slider.runLoop()` and such, whenever there's a need for such fancities.
+Aditionally having a reference to the slider gives more control over it, so it's possible to `slider.next()`, `slider.prev()`, `slider.run()`, `slider.stop()` and such, whenever there's a need for such fancities.
+
+It's also possible to change slider's behavior realtime by adjusting its options, for instance `slider.options.autorun = false` will stop automatic slide switching and `slider.options.pauseOnFocus = false` won't halt the slider when mouse hovers over the stage.
 
 A proper demo page with more examples is in the works. Meanwhile for more details take a look at HTML and CSS in the package. Everything should be pretty straight-forward.
 

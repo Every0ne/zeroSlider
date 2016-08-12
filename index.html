@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>pureSlider Demo</title>
-		<meta name="description" content="pureSlider - the painfully simple Do-It-Yourself slider. Usage examples.">
+		<meta name="description" content="pureSlider - the painfully simple Do-It-Yourself slider.">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<link href="https://fonts.googleapis.com/css?family=Alegreya+Sans:100,300,400,800&subset=latin-ext" rel="stylesheet">
@@ -12,14 +12,12 @@
 		<link rel="stylesheet" href="assets/css/main.css">
 		<link rel="stylesheet" href="pureSlider.css">
 
-		<script type="text/javascript" src="assets/js/zepto.js"></script>
 		<script type="text/javascript" src="pureSlider.js"></script>
 	</head>
 	<body>
 
 		<h1>pureSlider</h1>
 
-		<h2>CSS Transitions-based.</h2>
         <div class="stage" id="stage1">
 			<div class="slide" style="background-image: url('assets/img/barrow.jpg')"><span>Slide one - a barrow</span></div>
 			<div class="slide" style="background-image: url('assets/img/blossom.jpg')"><span>Second slide. Blossom</span></div>
@@ -29,27 +27,9 @@
 			<div class="next"></div>
 			<div class="prev"></div>
 		</div>
-		<br>
-		<h2>CSS Keyframes-based.</h2>
-		<div class="stage" id="stage2">
-			<div class="slide" style="background-image: url('assets/img/barrow.jpg')"><span>Slide one - a barrow</span></div>
-			<div class="slide" style="background-image: url('assets/img/blossom.jpg')"><span>Second slide. Blossom</span></div>
-			<div class="slide" style="background-image: url('assets/img/crocuses.jpg')"><span>Crocuses look calming on third slide.</span></div>
-			<div class="slide" style="background-image: url('assets/img/fog.jpg')"><span>Fog. 4th slide</span></div>
-			<div class="slide" style="background-image: url('assets/img/poppies.jpg')"><span>Poppies on fifth slide</span></div>
-			<div class="next"></div>
-			<div class="prev"></div>
-		</div>
-		<p>Looks like keyframes-based slide switching doesn't work too well. The "from-to" animation doesn't react to the mid-state of transition that a slide was in. That's by design and very little can be done to mitigate it. Even then slide switching will look strange and buggy. Best is to just keep with transitions between classes.</p>
 
 		<script>
-
-			var slider1 = PureSlider( document.querySelector('#stage1') );
-
-			PureSlider( document.querySelector('#stage2'), {
-				slideNode: '.slide',
-				slideDuration: 8000
-			});
+			PureSlider('#stage1');
 		</script>
     </body>
 </html>

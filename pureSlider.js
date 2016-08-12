@@ -18,7 +18,7 @@ var PureSlider = function(container, options){
 	this.me = this;
 
 	// container with slides
-	this.container = container;
+	this.container = typeof container === 'string' ? document.querySelector( container ) : container;
 
 	// setTimeout/setInterval handle
 	this.loop = false;
@@ -239,7 +239,7 @@ PureSlider.prototype.animate = function(current, next, isToggled){
 
 	if(isToggled)
 	{
-		this.stop();
+		clearTimeout( this.loop );
 
 		for( var i = 0; i < this.slides.length; i++ )
 			this.slides[i].classList.add( toggle );
