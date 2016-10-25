@@ -30,9 +30,8 @@ var PureSlider = function(container, options){
 	// current index for prev/current/next slide determination
 	this.currentIndex = 0;
 
-	// Default options
-	this.defaults = {
-
+	// Build options
+	this.options = Object.assign({
 		slideDuration: 2000,
 		slideNode: 'div.slide',
 		nextButton: '.next',
@@ -41,10 +40,7 @@ var PureSlider = function(container, options){
 		toggleClass: 'toggled',
 		autorun: true,
 		pauseOnFocus: true,
-	};
-
-	// Populate/Zero options
-	this.options = options ? options : {};
+	}, options);
 
 	this.init();
 };
@@ -56,12 +52,6 @@ var PureSlider = function(container, options){
  *  @details Fetches slides, builds options from defaults and submitted, adds event listeners.
  */
 PureSlider.prototype.init = function(){
-
-	// Populate options with default values for unset properties,
-	for( var property in this.defaults ){
-		if( this.defaults.hasOwnProperty( property ) && !this.options.hasOwnProperty(property) )
-			this.options[property] = this.defaults[property];
-	}
 
 	// Fetch slides.
 	this.slides = this.container.querySelectorAll( this.options.slideNode );
@@ -134,12 +124,25 @@ PureSlider.prototype.init = function(){
  *  parses it to an array of numbers and returns the number of miliseconds of the longest one.
  *  Used to determine how long will the transition take so when to run the idle (slide duration) loop part,
  */
-PureSlider.prototype.getTransitionDuration = function( elt ){
-	var durations = getComputedStyle( elt )['transition-duration'].toLowerCase().split(',').map( function( duration ){
-		return ( duration.indexOf("ms") > -1 ) ? parseFloat( duration ) : parseFloat( duration ) * 1000;
-	});
+PureSlider.prototype.getTransitionDuration = function( elt )
+{
+	function getPropDurations( elt, prop ){
+		return getComputedStyle( elt )[ prop ].toLowerCase().split(',').map( function( duration ){
+			return ( duration.indexOf("ms") > -1 ) ? parseFloat( duration ) : parseFloat( duration ) * 1000;
+		});
+	}
 
-	return Math.max.apply( null, durations );
+	function sumArrays( arr1, arr2 ){
+		return arr1.map( function( num, i ){
+			var result = num + arr2[i];
+			return isNaN( result ) ? 0 : result;
+		});
+    }
+
+	var transDurations = getPropDurations( elt, 'transition-duration' );
+	var transDelays = getPropDurations( elt, 'transition-delay' );
+
+	return Math.max.apply( null, sumArrays( transDurations, transDelays ) );
 };
 
 
