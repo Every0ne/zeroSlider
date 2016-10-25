@@ -120,7 +120,7 @@ PureSlider.prototype.init = function(){
  *
  *  @return returns a number of miliseconds
  *
- *  @details Gets a string of durations of all transitioning elements,
+ *  @details Gets a string of durations of all transitioning properties,
  *  parses it to an array of numbers and returns the number of miliseconds of the longest one.
  *  Used to determine how long will the transition take so when to run the idle (slide duration) loop part,
  */
@@ -217,12 +217,12 @@ PureSlider.prototype.getSlide = function(relativeOrder){
  *  @details Fetches current and next/previous slide and feeds it to the animation function
  *  along with isToggled param, then insreases/decreases the index.
  */
-PureSlider.prototype.next = function(isToggled){
-	this.animate(this.getSlide(0), this.getSlide(1), isToggled);
+PureSlider.prototype.next = function( isToggled ){
+	this.animate( this.getSlide(0), this.getSlide(1), isToggled );
 	this.currentIndex++;
 };
-PureSlider.prototype.prev = function(isToggled){
-	this.animate(this.getSlide(0), this.getSlide(-1), isToggled);
+PureSlider.prototype.prev = function( isToggled ){
+	this.animate( this.getSlide(0), this.getSlide(-1), isToggled );
 	this.currentIndex--;
 };
 
@@ -234,17 +234,17 @@ PureSlider.prototype.prev = function(isToggled){
  *  @param [in] next - next slide element to activate,
  *  @param [in] isToggled - boolean indicating if slide switch was ordered by user.
  */
-PureSlider.prototype.animate = function(current, next, isToggled){
+PureSlider.prototype.animate = function( current, next, isToggled ){
 
 	var
 		on      = this.options.activeClass,
 		toggle  = this.options.toggleClass;
 
-	if(isToggled)
+	if( isToggled )
 	{
 		clearTimeout( this.loop );
 
-		for( var i = 0; i < this.slides.length; i++ )
+		for( var i = this.slides.length; i-- ; )
 			this.slides[i].classList.add( toggle );
 
 		next.classList.add( on );
