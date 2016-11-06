@@ -96,6 +96,8 @@ That's why I made my own, based on what's already available - CSS transitions.
 pureSlider is still missing a few features that I want to integrate as soon as I have some time to spare:
 - play state functionality maybe?
 - random start,
-- support for more slide states for transitions,
+- support for more slide states for transitions (in/out maybe?),
+- navdots
+- multislide
 - make a proper landing page with example CSS transition classes,
-- tidy up the code.
+- tidy up the code (never-ending task).
