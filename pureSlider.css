@@ -76,7 +76,7 @@
 /*░░░▒▒▒▓▓▓███  TRANSITION-BASED STAGE SLIDES  ██████████████████████████████████████████▓▓▓▒▒▒░░░*/
 
 /* Normal slide in vanilla/inactive state */
-#stage1 .slide {
+.stage .slide {
     transition-property: opacity, transform, z-index;
 	transition-duration: 0ms;
 	transition-function: linear;
@@ -85,7 +85,7 @@
 }
 
 /* Active slide */
-#stage1 .slide.on {
+.stage .slide.on {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 5000ms, 5000ms, 0ms;
 	transition-function: linear;
@@ -97,7 +97,7 @@
 
 /* .slide activated by clicking next/prev navigation button.
  * May have, for instance, faster transition time, or a completely differen effect */
-#stage1 .slide.on.toggled {
+.stage .slide.on.toggled {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 1000ms, 1000ms, 0ms;
 	transition-function: linear;
@@ -108,7 +108,7 @@
 }
 
 /* .slide deactivated by clicking next/prev navigation button. */
-#stage1 .slide.toggled {
+.stage .slide.toggled {
 	transition-property: opacity, transform, z-index;
 	transition-duration: 1000ms, 1000ms, 0ms;
 	transition-function: linear;
