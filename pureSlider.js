@@ -1,17 +1,17 @@
 'use strict';
 
 /**
- * @brief PureSlider object constructor
+ * @brief ZeroSlider object constructor
  *
  * @param container - the Stage DOM element housing all Slides and UI Controls.
  * @param options - object with optional params.
  *
  * @return Optionally returns itself when called without "new" keyword.
  */
-var PureSlider = function( container, options )
+var ZeroSlider = function( container, options )
 {
-	if( !( this instanceof PureSlider ) )
-		return new PureSlider( container, options );
+	if( !( this instanceof ZeroSlider ) )
+		return new ZeroSlider( container, options );
 
 	// Build options
 	this.options = Object.assign({
@@ -53,7 +53,7 @@ var PureSlider = function( container, options )
  *
  * @details Performs some sanity checks, adds event listeners.
  */
-PureSlider.prototype.init = function()
+ZeroSlider.prototype.init = function()
 {
 	// Remove nav controls when not enough slides.
 	if( this.slides.length < 2 )
@@ -123,7 +123,7 @@ PureSlider.prototype.init = function()
  * parses it to an array of numbers and returns the number of miliseconds of the longest one.
  * Used to determine how long will the transition take so when to run the idle ( slide duration ) loop part,
  */
-PureSlider.prototype.getTransitionDuration = function( elt )
+ZeroSlider.prototype.getTransitionDuration = function( elt )
 {
 	function getPropDurations( elt, prop ){
 		return getComputedStyle( elt )[ prop ].toLowerCase().split( ',' ).map( function( duration ){
@@ -150,7 +150,7 @@ PureSlider.prototype.getTransitionDuration = function( elt )
  *
  * @details After the slide idle duration runs the slide cycle loop.
  */
-PureSlider.prototype.idle = function(){
+ZeroSlider.prototype.idle = function(){
 	this.loop = setTimeout( this.run.bind( this ), this.options.slideDuration );
 };
 
@@ -162,7 +162,7 @@ PureSlider.prototype.idle = function(){
  * If so, sets the run flag and switches slides to next one.
  * If slider autorun is disabled or stage has focus, disables the run flag and stops.
  */
-PureSlider.prototype.run = function()
+ZeroSlider.prototype.run = function()
 {
 	if( !this.options.autorun || ( this.options.pauseOnFocus && this.isFocused ) )
 	{
@@ -181,7 +181,7 @@ PureSlider.prototype.run = function()
  * @details Note that loop will restart if next/prev is executed,
  * unless this.options.autorun is set to false.
  */
-PureSlider.prototype.stop = function()
+ZeroSlider.prototype.stop = function()
 {
 	clearTimeout( this.loop );
 	this.isRunning = false;
@@ -198,7 +198,7 @@ PureSlider.prototype.stop = function()
  *
  * @return a slide pointed by relativeOrder
  */
-PureSlider.prototype.getSlide = function( relativeOrder )
+ZeroSlider.prototype.getSlide = function( relativeOrder )
 {
 	var	n = this.currentIndex + relativeOrder,
 		l = this.slides.length;
@@ -219,13 +219,13 @@ PureSlider.prototype.getSlide = function( relativeOrder )
  * @details Fetches current and next/previous slide and feeds it to the animation function
  * along with isToggled param, then insreases/decreases the index.
  */
-PureSlider.prototype.next = function( isToggled )
+ZeroSlider.prototype.next = function( isToggled )
 {
 	this.animate( this.getSlide( 0 ), this.getSlide( 1 ), isToggled );
 	this.currentIndex++;
 };
 
-PureSlider.prototype.prev = function( isToggled )
+ZeroSlider.prototype.prev = function( isToggled )
 {
 	this.animate( this.getSlide( 0 ), this.getSlide( -1 ), isToggled );
 	this.currentIndex--;
@@ -239,7 +239,7 @@ PureSlider.prototype.prev = function( isToggled )
  * @param next - next slide element to activate,
  * @param isToggled - boolean indicating if slide switch was ordered by user.
  */
-PureSlider.prototype.animate = function( current, next, isToggled )
+ZeroSlider.prototype.animate = function( current, next, isToggled )
 {
 	var
 		on     = this.options.activeClass,
@@ -272,7 +272,7 @@ PureSlider.prototype.animate = function( current, next, isToggled )
 /**
  * @brief Removes navigation controls. Useful if there's less than 2 slides on stage.
  */
-PureSlider.prototype.removeNavigation = function()
+ZeroSlider.prototype.removeNavigation = function()
 {
 	Array.prototype.forEach.call( this.container.querySelectorAll( this.options.prevButton + ', ' + this.options.nextButton ), function( elt ){
 		elt.parentNode.removeChild( elt );
@@ -285,7 +285,7 @@ PureSlider.prototype.removeNavigation = function()
  * @return the offsetHeight of container.
  * @details Hack is necessary in Firefox to force proper transition of first slide.
  */
-PureSlider.prototype.reflow = function(){
+ZeroSlider.prototype.reflow = function(){
 	return this.container.offsetHeight;
 };
 
@@ -295,10 +295,10 @@ PureSlider.prototype.reflow = function(){
 // jQuery-compatible libraries adapter
 ( function( $ ){
 	if( $ !== undefined ){
-		$.fn.pureSlider = function( options ){
+		$.fn.zeroSlider = function( options ){
 
 			return this.toArray().forEach( function( elt ){
-				PureSlider( elt, options );
+				ZeroSlider( elt, options );
 			});
 		}
 	}

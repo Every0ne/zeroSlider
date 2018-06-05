@@ -1,4 +1,4 @@
-# pureSlider
+# zeroSlider
 A slider as simple and lightweight as it can be. Provide some css classes with transition, a container with whatever you want to slide and it will slide it in a timely fashion.
 
 ## Advantages?
@@ -14,8 +14,9 @@ A slider as simple and lightweight as it can be. Provide some css classes with t
 - not a tool for the braindead or the lazy, this ain't an "everything & the kitchen sink" solution.
 
 ## How?
-Include pureSlider.js in your document, then:
+Include zeroSlider.js in your document, then:
 - get some basic markup:
+
 ```html
 <div class="stage">
 	<div class="slide first"></div>
@@ -24,6 +25,7 @@ Include pureSlider.js in your document, then:
 </div>
 ```
 - add a bit of CSS:
+
 ```css
 .stage {
   width: 300px;
@@ -53,24 +55,26 @@ Include pureSlider.js in your document, then:
 .slide.third {background: #00f}
 ```
 
-- run pureSlider, feeding it the "stage" DOM element either as node or just a selector string:
+- run zeroSlider, feeding it the "stage" DOM element either as node or just a selector string:
+
 ```javascript
 // like this:
-PureSlider(document.querySelector('.stage'));
+zeroSlider(document.querySelector('.stage'));
 
 // or this:
-PureSlider('.stage');
+zeroSlider('.stage');
 
 // or like this if you have a jQuery-like library:
-$('.stage').pureSlider();
+$('.stage').zeroSlider();
 ```
 
 - enjoy!
 
 ## Options?
 Why not? Here, take a look at defaults:
+
 ```javascript
-var slider = PureSlider( <stage>, { // "Stage" housing slides and controls. Can be a DOM node or a selector string.
+var slider = zeroSlider( <stage>, { // "Stage" housing slides and controls. Can be a DOM node or a selector string.
 	slideDuration:  2000, // How much time passes between slide switch
 	slideNode: 'div.slide', // Nodes inside <stage> to use as slide
 	nextButton: '.next', // Node inside <stage> to use as next slide button
@@ -93,7 +97,7 @@ I needed a simple slider for page hero banner. While there are dozens of those o
 That's why I made my own, based on what's already available - CSS transitions.
 
 ## TODO?
-pureSlider is still missing a few features that I want to integrate as soon as I have some time to spare:
+zeroSlider is still missing a few features that I want to integrate as soon as I have some time to spare:
 - random start,
 - support for more slide states for transitions (in/out maybe?),
 - navdots
