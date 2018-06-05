@@ -59,10 +59,10 @@ Include zeroSlider.js in your document, then:
 
 ```javascript
 // like this:
-zeroSlider(document.querySelector('.stage'));
+ZeroSlider(document.querySelector('.stage'));
 
 // or this:
-zeroSlider('.stage');
+ZeroSlider('.stage');
 
 // or like this if you have a jQuery-like library:
 $('.stage').zeroSlider();
@@ -74,7 +74,7 @@ $('.stage').zeroSlider();
 Why not? Here, take a look at defaults:
 
 ```javascript
-var slider = zeroSlider( <stage>, { // "Stage" housing slides and controls. Can be a DOM node or a selector string.
+var slider = ZeroSlider( <stage>, { // "Stage" housing slides and controls. Can be a DOM node or a selector string.
 	slideDuration:  2000, // How much time passes between slide switch
 	slideNode: 'div.slide', // Nodes inside <stage> to use as slide
 	nextButton: '.next', // Node inside <stage> to use as next slide button
