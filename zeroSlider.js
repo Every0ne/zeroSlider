@@ -71,14 +71,15 @@ ZeroSlider.prototype.init = function()
 
 	// UI interaction events.
 	this.container.addEventListener( 'click', function( event ){
-		event.preventDefault();
 
 		switch( true ){
 			case event.target.matches( self.options.nextButton ):
+				event.preventDefault();
 				self.next( true );
 				break;
 
 			case event.target.matches( self.options.prevButton ):
+				event.preventDefault();
 				self.prev( true );
 				break;
 		}
