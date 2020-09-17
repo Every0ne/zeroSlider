@@ -137,7 +137,7 @@ ZeroSlider.prototype.getTransitionDuration = function( elt )
 			var result = num + arr2[i];
 			return isNaN( result ) ? 0 : result;
 		});
- }
+	}
 
 	var transDurations = getPropDurations( elt, 'transition-duration' );
 	var transDelays = getPropDurations( elt, 'transition-delay' );
