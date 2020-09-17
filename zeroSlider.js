@@ -10,6 +10,9 @@
  */
 var ZeroSlider = function( container, options )
 {
+	if( !container )
+		return;
+
 	if( !( this instanceof ZeroSlider ) )
 		return new ZeroSlider( container, options );
 
@@ -33,6 +36,10 @@ var ZeroSlider = function( container, options )
 
 	// fetch slides
 	this.slides = this.container.querySelectorAll( this.options.slideNode );
+	
+	// next/prev buttons
+	this.nextButton = this.container.querySelector( this.options.nextButton );
+	this.prevButton = this.container.querySelector( this.options.prevButton );
 
 	// setTimeout/setInterval handle
 	this.loop = false;
@@ -68,22 +75,20 @@ ZeroSlider.prototype.init = function()
 	}
 
 	var self = this.me;
-
+	
 	// UI interaction events.
-	this.container.addEventListener( 'click', function( event ){
-
-		switch( true ){
-			case event.target.matches( self.options.nextButton ):
-				event.preventDefault();
-				self.next( true );
-				break;
-
-			case event.target.matches( self.options.prevButton ):
-				event.preventDefault();
-				self.prev( true );
-				break;
-		}
-	});
+	if( this.nextButton ){
+		this.nextButton.addEventListener( 'click', function( e ){
+			e.preventDefault();
+			self.next( true );
+		});
+	}
+	if( this.prevButton ){
+		this.prevButton.addEventListener( 'click', function( e ){
+			e.preventDefault();
+			self.prev( true );
+		});
+	}
 
 	// Mouse is hovering over stage.
 	this.container.addEventListener( 'mouseover', function(){
@@ -218,7 +223,7 @@ ZeroSlider.prototype.getSlide = function( relativeOrder )
  * @param isToggled - boolean. If true, means that slide switch was made by user.
  *
  * @details Fetches current and next/previous slide and feeds it to the animation function
- * along with isToggled param, then insreases/decreases the index.
+ * along with isToggled param, then increases/decreases the index.
  */
 ZeroSlider.prototype.next = function( isToggled )
 {
@@ -232,6 +237,20 @@ ZeroSlider.prototype.prev = function( isToggled )
 	this.currentIndex--;
 };
 
+/**
+ * @brief Shifts current slide with a supplied slide.
+ *
+ * @param isToggled - boolean, defaults to true, as this method is only called by user.
+ *
+ * @details Fetches current and new slide and feeds it to the animation function
+ * along with isToggled param, then calculates the index.
+ */
+ZeroSlider.prototype.other = function( otherSlide, isToggled = true )
+{
+	var currentSlide = this.slides[0].parentElement.querySelector( '.'+this.options.activeClass );
+	this.animate( currentSlide, otherSlide, isToggled );
+	this.currentIndex = Array.prototype.indexOf.call( this.slides, otherSlide );
+};
 
 /**
  * @brief Turns slides on and off.
@@ -263,6 +282,15 @@ ZeroSlider.prototype.animate = function( current, next, isToggled )
 		next.classList.add( on );
 		current.classList.remove( on, toggle );
 	}
+
+	var slideSwitch = new CustomEvent('slideswitch', {
+		detail: {
+			oldSlide:	current,
+			newSlide:	next
+		}
+	});
+
+	this.container.dispatchEvent( slideSwitch );
 
 	// Run flag needs to be set, so that unfocus event doesn't re-run the loop.
 	this.isRunning = true;
